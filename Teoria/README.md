@@ -62,7 +62,7 @@ _Cuando se necesiten reutilizar varias subclases existentes que no tengan funcio
 
 
 ## Template Method
-Es un **patrón de diseño de comportamiento** que define el esqueleto de un algoritmo en la superclase pero permite a las subclases redefinir ciertos pasos del algoritmo sin cambiar su estructura.
+Es un _patrón de diseño de comportamiento_ del ámbito de clases. Con este patrón se define **el esqueleto** de un algoritmo en una clase abstracta y se deja que sean las subclases quienes proporcionen **detalles concretos**  de algunos o todos los pasos de ese algoritmo. Lo interesante de este algoritmo es que también da la opción a las subclases de redefinir los pasos de acuerdo con sus necesidades, sin cambiar la estructura del algoritmo.
 
 
 ### Motivación 
@@ -76,7 +76,7 @@ Hubo otro problema relacionado con el código del cliente que usaba estas clases
 
 ![TemplateMethod-Img1](imgs/TemplateMethod-Img1.png)
 
-Template Method sugiere dividir un algoritmo en una serie de pasos, convertir estos pasos en métodos y colocar una serie de llamadas a estos métodos dentro de un único "template method". Los pasos pueden ser abstractos o tener alguna implementación predeterminada. Para usar el algoritmo, se supone que el cliente debe proporcionar su propia subclase, implementar todos los pasos abstractos y anular algunos de los opcionales si es necesario (pero no el template method en sí).
+Template Method sugiere dividir el algoritmo en una serie de pasos, convertir estos pasos en métodos y colocar una serie de llamadas a estos métodos dentro de un único "template method". Los pasos pueden ser abstractos o tener alguna implementación predeterminada. Para usar el algoritmo, se supone que el cliente debe proporcionar su propia subclase, implementar todos los pasos abstractos y anular algunos de los opcionales si es necesario (pero no el template method en sí).
 
 Veamos cómo se desarrollará esto en nuestra aplicación de minería de datos. Podemos crear una clase base para los tres algoritmos de análisis. Esta clase define un método de plantilla que consta de una serie de llamadas a varios pasos del procesamiento de documentos.
 
@@ -89,8 +89,8 @@ Parece que el código para abrir/cerrar archivos y extraer/analizar datos es dif
 
 Tenemos dos tipos de pasos:
 
-1. _Abstractos_, deben ser implementados por todas las subclases.
-2. _Opcionales_, ya tienen cierta implementación por defecto, pero aún así pueden sobreescribirse si es necesairo.
+1. _Métodos Abstractos_, deben ser implementados por todas las subclases.
+2. _Métodos Opcionales_, ya tienen cierta implementación por defecto, pero aún así pueden sobreescribirse si es necesairo.
 
 Hay otro tipo de paso llamado **hooks**. Es un paso opcional con cuerpo vacío. El "template method" seguirá funcionando aunque el gancho no se sobreescriba. Normalmente los hooks se colocan antes y después de pasos cruciales de los algoritmos, suministrando a las subclases puntos adicionales de extensión para un algoritmo.
 
