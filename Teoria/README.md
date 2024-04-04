@@ -1,10 +1,21 @@
-<h1 align="center">Título</h1>
+<h1 align="center">Teoría</h1>
 
-## Adapter
-También conocido como "Wrapper" es una **patrón de diseño estructural** que permite la colaboración de objetos con interfaces incompatibles.
+<h2 align="center">Adapter</h2>
+
+Es una **patrón de diseño estructural** que permite la colaboración de objetos con interfaces incompatibles.
 
 ### Intención
-Se busca "convertir" la interfaz de una clase en otra que el cliente espera. **Adapter** permite que ciertas clases trabajen en conjunto cuando no pudiesen hacerlo por tener interfaces incompatibles
+- Adaptar la interface de una clase a la interface que espera el cliente (asumiendo que ambas interfaces son diferentes).
+- Permitir que interfaces incompatibles trabajen juntas.
+
+Cuando se habla de "interfaces", nos referimos a los elementos o firmas que una clase expone para que otras puedan utilizarla. No hace referencia a una clase `Interface`.
+
+### Implementación
+Para este patrón se necesitan ciertos prerequisitos:
+
+1. Debe haber un `Cliente`, el cual delege la funcionalidad importarnte a un objeto diferente. El `Cliente` debe tener una referencia al objeto usando un tipo **abstracto** (una interface o clase abstracta). A esta interface o tipo abstracto se le da el nombre de `Target`.
+
+2. Tener un objeto que implemente una funcionalidad, o tenga información, que pueda ser de interés para el `Cliente`, pero que no implemente la interface que se necesita. A este objeto se le da el nombre de `Adaptee`
 
 ### Motivación
 Considere un ejemplo: un editor de dibujos que permite a los usuarios dibujar y organizar elementos gráficos (líneas, polígonos, texto, etc.) en imágenes y diagramas. La abstracción clave del editor de dibujos es el objeto gráfico, que tiene una forma editable y puede dibujarse a sí mismo. La interfaz para objetos gráficos está definida por una clase abstracta llamada `Shape`. El editor define una subclase de Shape para cada tipo de objeto gráfico: una clase `LineShape` para líneas, una clase `PolygonShape` para polígonos, etc.
@@ -42,6 +53,7 @@ _En sistemas Legacy_
 _Cuando se necesiten reutilizar varias subclases existentes que no tengan funcionalidades comunes._
 
 ### Estructura
+Es el único patrón que tiene los dos ámbitos, clases y objetosm ya que podemos implementarlos de dos formas diferentes.
 
 - Un adaptador de clase usando herencia múltiple para adaptar una interfaz a otra.
 
@@ -56,12 +68,13 @@ _Cuando se necesiten reutilizar varias subclases existentes que no tengan funcio
 
 - **_Client_** (DrawingEditor): colabora con objetos que satisfacen la interfaz _Target_.
 
-- **_Adaptec_** (TextView): define una interfaz que necesita ser adaptada.
+- **_Adaptee_** (TextView): define una interfaz que necesita ser adaptada.
 
 - **_Adapter_** (TextShape): adapta la interfaz de _Adaptec_ a la interfaz de _Target_
 
 
-## Template Method
+<h2 align="center">Template Method</h2>
+
 Es un _patrón de diseño de comportamiento_ del ámbito de clases. Con este patrón se define **el esqueleto** de un algoritmo en una clase abstracta y se deja que sean las subclases quienes proporcionen **detalles concretos**  de algunos o todos los pasos de ese algoritmo. Lo interesante de este algoritmo es que también da la opción a las subclases de redefinir los pasos de acuerdo con sus necesidades, sin cambiar la estructura del algoritmo.
 
 
@@ -107,10 +120,42 @@ Hay otro tipo de paso llamado **hooks**. Es un paso opcional con cuerpo vacío. 
   - puede sobreescribir todos los pasos, pero no el propio "template method".
 
 
-## Composite
+<h2 align="center"> Composite</h2>
+
 Es un **patron de diseño estructural** que le permite _compooner objetos en estructura de árbol_ y luego trabajar con estas estructuras como si fueran objetos individuales.
 
-### Motivación
+El uso de Composite solo tiene sentido cuando el modelo central de la aplicación puede representarse en forma de árbol.
 
+> El patrón Composite permite ejecutar un comportamiento de forma recursiva sobre todos los componentes de un árbol de objetos.
+
+### Motivación
+Imaginemos que tenemos dos tipos de objetos: _Productos_ y _Cajas_. Una _Caja_ puede contener varios _Productos_ así como cierto número de _Cajas_ más pequeñas. Estas _Cajas_ pequeñas también pueden contener algunos _Productos_ o incluso _Cajas_ más pequeñas, y así sucesivamente.
+
+Suponiendo que se quiere crear un sistema de pedidos que utiliza estas clases. ¿Como se determinaría el precio total de ese pedido?
+
+![composite-img1](imgs/Composite-Img1.png)
+
+Una solución directa sería desenvolver todas las cajas, repasar todos los productos y calcular el total. Esto solo sería viable en el mundo real.
+
+El patrón **Composite** siguiere trabajar con _Productos_ y _Cajas_ a través de una interfaz común que declara un método para calcular el precio total
+
+#### Como funcionaría este método?
+Para un producto solo devolveríamos el precio del producto. Para una caja, se recorre cada artículo que contiene la caja preguntando su precio y se devuelve el total por la caja. Si uno de estos artículos sería una caja más pequeña, esa caja también recorrería contenido y así **_recursivamente_**, hasta que se calcule el precio de todos los componentes internos. Una caja incluso podría añadir costos adicionales al precio final, como costos de empeaquetamiento.
+
+La ventaja de esta solición es que no hay que preocuparse por las clases concretas de los objetos que componen el árbol. No hay necesidad de saber si un objeto es un producto simple o una sofisticada caja. Se tratan a todos por igual  través de una interfaz común.
+
+Cuando se invoca a un método, los propios objetos pasan la solicitud a lo largo del árbol.
 
 ### Estructura
+
+![composite-img2](imgs/Composite-Img2.png)
+
+- El **Cliente** funciona con todos los elementos a través de la interfaz componente. Como resultado el cliente puede funcionar de la misma manera tanto con elementos simples o complejos del árbol.
+
+- La interfaz **Componente** describe operaciones que son comunes a elementos simples y complejos del árbol.
+
+- La **Hoja** es un elemento básico de un árbol que no tiene subelementos.
+  - Normalmente, los componentes de la hoja acaban realizando la mayoría del trabajo real, ya que no tienen a nadie a quien delegarle el trabajo
+
+- El **Contenedor** (también llamado compuesto) es un elemento que tiene subelementos: hojas u otros contenedores. Un contenedor no conoce las clases concretas de sus hijos. Funciona con todos los subelementos únicamente a través de la interfaz componente.
+  - Al recibir una solicitud, un contenedor delega el trabajo a sus subelementos, procesa los resultados intermedios y devuelve el resultado final al cliente.
