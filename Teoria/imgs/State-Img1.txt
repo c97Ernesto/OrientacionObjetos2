@@ -1,0 +1,39 @@
+@startuml
+interface PackageState <State> {
+  +next(pkg: Package): void
+  +prev(pkg: Package): void
+  +printStatus(): void
+}
+
+class Package <Context> {
+  -state: PackageState
+  +previousState(): void
+  +nextState(): void
+  +printStatus(): void
+}
+
+class OrderedState <ContextStateA> {
+  +next(pkg: Package): void
+  +prev(pkg: Package): void
+  +printStatus(): void
+}
+
+class DeliveredState <ContextStateB> {
+  +next(pkg: Package): void
+  +prev(pkg: Package): void
+  +printStatus(): void
+}
+
+class ReceivedState <ContextStateC> {
+  +next(pkg: Package): void
+  +prev(pkg: Package): void
+  +printStatus(): void
+}
+
+PackageState <|.. OrderedState
+PackageState <|.. DeliveredState
+PackageState <|.. ReceivedState
+Package --> PackageState: -state
+
+@enduml
+

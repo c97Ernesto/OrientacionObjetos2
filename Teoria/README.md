@@ -167,6 +167,7 @@ Cuando se invoca a un método, los propios objetos pasan la solicitud a lo largo
 - Hace más fácil el agreado de nuevos tipos de componentes porque los clientes no tienen que cambiar cuando aparecen nuevas clases componentes.
 - No permite restringuir las estructuras de composición (cuando ciertos compuestos pueden armarse solo con cierto tipo de atómicos).
 
+#### [Ejemplo](EjemploComposite.md#ejemplo-composite)
 
 ## Strategy
 
@@ -227,15 +228,29 @@ Es un _patrón de diseño de comportamiento_ que permite a un objeto alterar su 
 Se caracteriza por modificar su comportamiento dependiendo del estado en el que se encuentra la aplicación. Para lograr esto es necesario crear una serie de clases que representarán los distintos estados por los que puede pasar la aplicación; es decir, se requiere de una clase por cada estado por el que la aplicación pueda pasar.
 
 ### Motivación
-Considere una clase `TCPConnection` que representa una conexión de red. Un objeto `TCPConnection` puede estar en uno de varios estados diferentes: Establecido, Escuchando, Cerrado. Cuando un objeto `TCPConnection` recibe solicitudes de otros objetos, este responde de manera diferente dependiendo de su estado actual. Por ejemplo, el efecto de una solicitud Escuchando depende de si la conexión está en estado Cerrado o Establecido. El patrón **State** describe cómo `TCPConnection` puede exhibir un comportamiento diferente en cada estado.
-La idea clave de este patrón es introducir una clase abstracta llamada `TCPState` para representar los estados de la conexión de red. La clase `TCPState` declara una interfaz común a todas las clases que representan diferentes estados operativos. 
-Las subclases de `TCPState` implementan un comportamiento específico del estado. Por ejemplo, las clases `TCPEstablished` y `TCPClosed` implementan un comportamiento particular para los estados Establecido y Cerrado de `TCPConnection`.
-La clase `TCPConnection` mantiene un objeto de estado (una instancia de una subclase de `TCPState`) que representa el estado actual de la `TCPConnection`. La clase Conenction delega todas las solicitudes específicas de estado a este objeto de estado. `TCPConnection` utiliza su instancia de subclase `TCPState` para realizar operaciones particulares del estado de la conexión.
-Siempre que la conexión cambia de estado, el objeto `TCPConnection` cambia el objeto de estado que utiliza. Cuando la conexión pasa de establecida a cerrada, por ejemplo, `TCPConnection` reemplazará su instancia `TCPEstablished` con una instancia `TCPClosed`.
+La idea principal del patrón de _state_ es **permitir que el objeto cambie su comportamiento sin cambiar su clase**. Además, al implementarlo, el código debería permanecer más limpio sin muchas declaraciones if/else.
+
+Imaginemos que tenemos un paquete que se envía a una oficina de correos, el paquete en sí se puede pedir, luego entregar a una oficina de correos y finalmente recibirlo un cliente. Ahora, dependiendo del estado real, queremos imprimir su estado de entrega.
+
+El enfoque más simple sería agregar algunos indicadores booleanos y aplicar declaraciones simples if/else dentro de cada uno de nuestros métodos en la clase. Eso no lo complicará mucho en un escenario simple. Sin embargo, podría complicar y contaminar el código cuando tengamos que procesar más estados, lo que resultará en aún más declaraciones if/else.
+
+Además, toda la lógica para cada uno de los estados se distribuiría en todos los métodos. Ahora bien, aquí es donde se podría considerar el uso del patrón Estado. Gracias al patrón de diseño State, podemos encapsular la lógica en clases dedicadas, aplicar el principio de responsabilidad única y el principio abierto/cerrado, tener un código más limpio y fácil de mantener.
+
+![State-Img1](imgs/State-Img1.svg)
+
+La clase `Package` actúa como un contexto. También mantiene una referencia a una instancia de una de las clases _State_ que representa el estado actual del Paquete.
+
+El _Context_ delega la gestión de entradas del usuario a un objeto _State_. Naturalmente, el resultado depende del estado que se encuentre actualmente activo, ya que cada estado puede gestionar las entradas de manera diferente
+
+La clase `PackageState` declara métodos que todos los estados concretos deben implementar, y también proporciona una referencia inversa al objeto contexto asociado con el estado. Los estados pueden utilizar la referencia inversa para dirigir el contexto a otro estado.
+
+Los `ContextState` implementan varios comportamientos asociados a un estado contexto. También pueden disparar transiciones de estado en el contexto.
+
+
 
 ### Estructura 
 
-![State-Img1](imgs/State-Img1.svg)
+![State-Img2](imgs/State-Img2.svg)
 
 1. **Context** representa el componente que puede cambiar de estado,  el cual tiene entre sus propiedades el estado actual. 
 
@@ -244,9 +259,30 @@ Siempre que la conexión cambia de estado, el objeto `TCPConnection` cambia el o
 3. **ConcreteState** representan a los componentes los cuales tienen un posible estado por el cual la aplicación puede pasar, por lo que tendremos un `ConcreteState` por cada estado posible, esta clase debe heredar de `AbstractState`.
     - Los objetos de estado pueden almacenar una referencia inversa al objeto de contexto. A través de esta referencia, el estado puede extraer cualquier información requerida del objeto contexto, así como inciari transiciones de estado.
 
-4. Tanto _Context_ como _ConcreteState_ pueden establecer el nuevo estado del contexto
+4. Tanto _Context_ como _ConcreteState_ pueden establecer el nuevo estado del contexto.
+    - La responsabilidad de decidir cuando cambiar de estado está definida por los mismos estados.
+
+### Como implementarlo
+1. Decide qué clase actuará como contexto. Puede ser una clase existente que ya tiene el código dependiente del estado, o una nueva clase, si el código específico del estado está distribuido a lo largo de varias clases.
+
+2. Declara la interfaz de estado. Aunque puede replicar todos los métodos declarados en el contexto, céntrate en los que pueden contener comportamientos específicos del estado.
+
+3. Para cada estado actual, crea una clase derivada de la interfaz de estado. Después repasa los métodos del contexto y extrae todo el código relacionado con ese estado para meterlo en tu clase recién creada. </br>
+Al mover el código a la clase estado, puede que descubras que depende de miembros privados del contexto. Hay varias soluciones alternativas:
+    - Haz públicos esos campos o métodos.
+    - Convierte el comportamiento que estás extrayendo para ponerlo en un método público en el contexto e invócalo desde la clase de estado. Esta forma es desagradable pero rápida y siempre podrás arreglarlo más adelante.
+    - Anida las clases de estado en la clase contexto, pero sólo si tu lenguaje de programación soporta clases anidadas.
+
+4. En la clase contexto, añade un campo de referencia del tipo de interfaz de estado y un modificador (setter) público que permita sobrescribir el valor de ese campo.
+
+5. Vuelve a repasar el método del contexto y sustituye los condicionales de estado vacíos por llamadas a métodos correspondientes del objeto de estado.
+
+6. Para cambiar el estado del contexto, crea una instancia de una de las clases de estado y pásala a la clase contexto. Puedes hacer esto dentro de la propia clase contexto, en distintos estados, o en el cliente. Se haga de una forma u otra, la clase se vuelve dependiente de la clase de estado concreto que instancia.
+
+
 
 ### Aplicabilidad
 - Se recomienda utilizar este patrón cuando haya un objeto que se comporte de manera diferente dependiendo de su estado actual, el número de estados sea muy grande y el código específico del estado cambie con frecuencia
 - Cuando haya una clase plagada con enormes condicionales que alteran el modo en que se comporta la clase de acuerdo con los valores actuales de los campos de la clase.
 - O cuando haya mucho código duplicado por estados similares y transiciones de una máquina de estados basada en condiciones.
+

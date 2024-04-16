@@ -1,0 +1,59 @@
+@startuml
+
+skinparam classAttributeIconSize 0
+
+Abstract Topografia <Component>{
+
+  {abstract} + proporcionDeAgua()
+  {abstract} + sonIguales(Topografia topografia)
+  {abstract} + igualAgua()
+  {abstract} + igualTierra()
+  {abstract} + igualMixta()
+  {abstract} + igualPantano()
+}
+
+class Agua <Leaf>{
+  {method} + proporcionAgua(): double
+  {method} + sonIguales(Topografia tografia): boolean
+  {method} + igualAgua(): boolean
+  {method} + igualTierra(): boolean
+  {method} + igualMixta(Mixta topografia): boolean
+  {method} + igualPantano(): boolean
+}
+
+class Tierra <Leaf>{
+  {method} + proporcionAgua(): double
+  {method} + sonIguales(): boolean
+  {method} + igualAgua(): boolean
+  {method} + igualTierra(): boolean
+  {method} + igualMixta(Mixta topografia): boolean
+  {method} + igualPantano(): boolean
+}
+
+class Mixta <Composite>{
+
+  {method} + <<create>>Mixta(Topografia[4] partes)
+  {method} + proporcionAgua(): double
+  {method} - totalDeAgua: double
+  {method} + sonIguales(Topografia tografia): boolean
+  {method} + igualAgua(): boolean
+  {method} + igualTierra(): boolean
+  {method} + igualMixta(Mixta topografia): boolean
+  {method} + igualPantano(): boolean
+}
+
+class Pantano <leaf> {
+  {method} + proporcionAgua(): double
+  {method} + sonIguales(Topografia tografia): boolean
+  {method} + igualAgua(): boolean
+  {method} + igualTierra(): boolean
+  {method} + igualMixta(Mixta topografia): boolean
+  {method} + igualPantano(): boolean
+}
+
+Topografia <|-- Agua
+Topografia <|-- Tierra
+Topografia <|-- Mixta
+Topografia <--* Mixta: partes [4]
+Topografia <|-- Pantano
+@enduml

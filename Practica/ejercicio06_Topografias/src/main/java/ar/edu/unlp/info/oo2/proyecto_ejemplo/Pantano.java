@@ -4,7 +4,7 @@ public class Pantano extends Topografia{
 
 	@Override
 	public double proporcionDeAgua() {
-		return 0;
+		return 0.7;	
 	}
 
 	@Override
@@ -24,13 +24,16 @@ public class Pantano extends Topografia{
 		// TODO Auto-generated method stub
 		return false;
 	}
-	
-	
 
 	@Override
 	public boolean igualMixta(Mixta topografiaMixta) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public boolean igualPantano() {
+		return true;
 	}
 
 	

@@ -10,7 +10,8 @@ public abstract class Topografia {
 	public abstract boolean igualAgua();
 	
 	public abstract boolean igualTierra();
-
+	
+	public abstract boolean igualPantano();
 	
 	//establezco método solo para Topografía Mixta
 	public abstract boolean igualMixta(Mixta topografiaMixta);

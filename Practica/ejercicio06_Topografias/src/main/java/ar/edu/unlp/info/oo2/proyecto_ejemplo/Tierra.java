@@ -25,7 +25,11 @@ public class Tierra extends Topografia{
 
 	@Override
 	public boolean igualMixta(Mixta topografiaMixta) {
-		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean igualPantano() {
 		return false;
 	}
 

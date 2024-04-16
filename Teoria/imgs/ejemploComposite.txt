@@ -1,0 +1,87 @@
+@startuml
+
+interface Shape {
+    +getX(): int
+    +getY(): int
+    +getWidth(): int
+    +getHeight(): int
+    +move(x: int, y: int): void
+    +isInsideBounds(x: int, y: int): boolean
+    +select(): void
+    +unSelect(): void
+    +isSelected(): boolean
+    +paint(graphics: Graphics): void
+}
+
+abstract class BaseShape {
+    -x: int
+    -y: int
+    -color: Color
+    -selected: boolean
+    +BaseShape(x: int, y: int, color: Color)
+    +getX(): int
+    +getY(): int
+    +getWidth(): int
+    +getHeight(): int
+    +move(x: int, y: int): void
+    +isInsideBounds(x: int, y: int): boolean
+    +select(): void
+    +unSelect(): void
+    +isSelected(): boolean
+    +enableSelectionStyle(graphics: Graphics): void
+    +disableSelectionStyle(graphics: Graphics): void
+    +paint(graphics: Graphics): void
+}
+
+class Dot {
+    -DOT_SIZE: int
+    +Dot(x: int, y: int, color: Color)
+    +getWidth(): int
+    +getHeight(): int
+    +paint(graphics: Graphics): void
+}
+
+class Circle {
+    -radius: int
+    +Circle(x: int, y: int, radius: int, color: Color)
+    +getWidth(): int
+    +getHeight(): int
+    +paint(graphics: Graphics): void
+}
+
+class Rectangle {
+    -width: int
+    -height: int
+    +Rectangle(x: int, y: int, width: int, height: int, color: Color)
+    +getWidth(): int
+    +getHeight(): int
+    +paint(graphics: Graphics): void
+}
+
+class CompoundShape {
+    -children: List<Shape>
+    +CompoundShape(components: Shape...)
+    +add(component: Shape): void
+    +add(components: Shape...): void
+    +remove(child: Shape): void
+    +remove(components: Shape...): void
+    +clear(): void
+    +getX(): int
+    +getY(): int
+    +getWidth(): int
+    +getHeight(): int
+    +move(x: int, y: int): void
+    +isInsideBounds(x: int, y: int): boolean
+    +unSelect(): void
+    +selectChildAt(x: int, y: int): boolean
+    +paint(graphics: Graphics): void
+}
+
+Shape <|-- BaseShape
+BaseShape <|-- Dot
+BaseShape <|-- Circle
+BaseShape <|-- Rectangle
+BaseShape <|-- CompoundShape
+
+@enduml
+

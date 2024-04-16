@@ -7,8 +7,8 @@ public class Mixta extends Topografia{
 	
 	List<Topografia> partes;
 	
-	public Mixta(List<Topografia> topografias) {
-		partes = new ArrayList<Topografia>(topografias);
+	public Mixta(List<Topografia> partes) {
+		partes = new ArrayList<Topografia>(partes);
 	}
 	
 	public double proporcionDeAgua() {
@@ -45,6 +45,12 @@ public class Mixta extends Topografia{
 	
 	@Override
 	public boolean igualTierra() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean igualPantano() {
 		// TODO Auto-generated method stub
 		return false;
 	}
