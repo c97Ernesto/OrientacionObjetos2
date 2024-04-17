@@ -148,7 +148,7 @@ Cuando se invoca a un método, los propios objetos pasan la solicitud a lo largo
 
 ### Estructura
 
-![composite-img2](imgs/Composite-Img2.png)
+![composite-img2](imgs/CompositeStructure-Img2.png)
 
 - El **Cliente** funciona con todos los elementos a través de la interfaz componente. Como resultado el cliente puede funcionar de la misma manera tanto con elementos simples o complejos del árbol.
 

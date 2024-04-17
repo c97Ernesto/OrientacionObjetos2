@@ -1,6 +1,6 @@
 ## Ejemplo Composite
 
-![ejemploComposite](imgs/ejemploComposite.svg)
+![ejemploComposite](imgs/CompositeEjemplo.svg)
 
 1. _**Shape (Cliente)**_
     - Define las operaciones comunes que todas las formas deben implementar, como obtener coordenadas, moverse, verificar si un punto está dentro de la forma, seleccionar y deseleccionar, etc.
