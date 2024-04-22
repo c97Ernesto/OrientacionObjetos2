@@ -263,21 +263,21 @@ Los `ContextState` implementan varios comportamientos asociados a un estado cont
     - La responsabilidad de decidir cuando cambiar de estado está definida por los mismos estados.
 
 ### Como implementarlo
-1. Decide qué clase actuará como contexto. Puede ser una clase existente que ya tiene el código dependiente del estado, o una nueva clase, si el código específico del estado está distribuido a lo largo de varias clases.
+1. Decidir qué clase actuará como contexto. Puede ser una clase existente que ya tiene el código dependiente del estado, o una nueva clase, si el código específico del estado está distribuido a lo largo de varias clases.
 
-2. Declara la interfaz de estado. Aunque puede replicar todos los métodos declarados en el contexto, céntrate en los que pueden contener comportamientos específicos del estado.
+2. Declarar la interfaz de estado. Aunque se puedan replicar todos los métodos declarados en el contexto, hay que centrarse en los que pueden contener comportamientos específicos del estado.
 
-3. Para cada estado actual, crea una clase derivada de la interfaz de estado. Después repasa los métodos del contexto y extrae todo el código relacionado con ese estado para meterlo en tu clase recién creada. </br>
+3. Para cada estado actual, crear una clase derivada de la interfaz de estado. Luego de verificar los métodos del contexto, extraer todo el código relacionado con ese estado para meterlo en la clase recién creada. </br>
 Al mover el código a la clase estado, puede que descubras que depende de miembros privados del contexto. Hay varias soluciones alternativas:
-    - Haz públicos esos campos o métodos.
-    - Convierte el comportamiento que estás extrayendo para ponerlo en un método público en el contexto e invócalo desde la clase de estado. Esta forma es desagradable pero rápida y siempre podrás arreglarlo más adelante.
-    - Anida las clases de estado en la clase contexto, pero sólo si tu lenguaje de programación soporta clases anidadas.
+    - Hacer publicos los campos o métodos.
+    - Convertir el comportamiento que se está extrayendo para ponerlo en un método público en el contexto e invocarlo desde la clase de estado. Esta forma no es la mejor, pero es rápida y siempre se podrá arreglar más adelante.
+    - Anidar las clases de estado en la clase contexto, sólo si el lenguaje de programación soporta clases anidadas.
 
-4. En la clase contexto, añade un campo de referencia del tipo de interfaz de estado y un modificador (setter) público que permita sobrescribir el valor de ese campo.
+4. En la clase contexto, se podría añadir un campo de referencia del tipo de interfaz de estado y un modificador (setter) público que permita sobrescribir el valor de ese campo.
 
-5. Vuelve a repasar el método del contexto y sustituye los condicionales de estado vacíos por llamadas a métodos correspondientes del objeto de estado.
+5. Repasar el método del contexto y sustituir los condicionales de estado vacíos por llamadas a métodos correspondientes del objeto de estado.
 
-6. Para cambiar el estado del contexto, crea una instancia de una de las clases de estado y pásala a la clase contexto. Puedes hacer esto dentro de la propia clase contexto, en distintos estados, o en el cliente. Se haga de una forma u otra, la clase se vuelve dependiente de la clase de estado concreto que instancia.
+6. Para cambiar el estado del contexto, se crea una instancia de una de las clases de estado y se pasa a la clase contexto. Esto se puede hacer dentro de la propia clase contexto, en distintos estados, o en el cliente. Se haga de una forma u otra, la clase se vuelve dependiente de la clase de estado concreto que se instancia.
 
 
 
