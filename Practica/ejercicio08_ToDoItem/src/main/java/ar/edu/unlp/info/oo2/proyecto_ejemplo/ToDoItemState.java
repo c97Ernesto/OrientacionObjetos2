@@ -19,8 +19,6 @@ public abstract class ToDoItemState {
 		this.tarea.setNameState(nameState);
 	}
 	
-	// si la tarea a la cual le asignamos el método start() no estaba en estado pendiente, generamos un error
-	// también se puede dejar como método abstracto y que no haga absolutamente nada.
 	public abstract void start();
 	
 	public abstract void togglePaused();

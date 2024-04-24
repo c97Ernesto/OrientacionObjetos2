@@ -1,0 +1,83 @@
+@startuml
+
+class Pending <ConcreteState>{
+    {static} - NOMBRE_ESTADO: String
+
+    {static} + getNombreEstado(): String
+    + start()
+    + togglePaused()
+    + workedTime(): Duration
+    + finish()
+    + addComment(comment: String)
+}
+
+class Paused <ConcreteState>{
+    {static} - NOMBRE_ESTADO: String
+
+    {static} + getNombreEstado(): String
+    + start()
+    + togglePaused()
+    + workedTime(): Duration
+    + finish()
+    + addComment(comment: String)
+}
+
+class InProgress <ConcreteState>{
+    {static} - NOMBRE_ESTADO: String
+
+    {static} + getNombreEstado()
+    + start()
+    + togglePaused()
+    + workedTime(): Duration
+    + finish()
+    + addComment(comment: String)
+}
+
+class Finished <ConcreteState>{
+    {static} - NOMBRE_ESTADO: String
+
+    {static} + getNombreEstado(): String
+    + togglePaused()
+    + workedTime(): Duration
+    + addComment(comment: String)
+    + start()
+    + finish()
+}
+
+class ToDoItem <Context>{
+    - taskName: String
+    - stateName: String
+    - fechaInicio: Date
+    - fechaFin: Date
+    - comments: String[*]
+
+    + <<create>> ToDoItem(name: String)
+    + actualizarEstado(nuevoEstado: ToDoItemState)
+    + start()
+    + togglePause()
+    + finish()
+    + workedTime(): Duration
+    + addComment(comment: String)
+}
+
+abstract class ToDoItemState <State>{
+
+    {abstract} + start()
+    {abstract} + togglePaused()
+    {abstract} + finish()
+    + workedTime(): Duration
+    {abstract} + addComment(comment: String)
+}
+
+ToDoItemState <|-- Pending
+ToDoItemState <|-- Paused
+ToDoItemState <|-- InProgress
+ToDoItemState <|-- Finished
+
+ToDoItem "- tarea 1" <-- ToDoItemState
+
+ToDoItem --> "- state 1" ToDoItemState
+
+
+@enduml
+

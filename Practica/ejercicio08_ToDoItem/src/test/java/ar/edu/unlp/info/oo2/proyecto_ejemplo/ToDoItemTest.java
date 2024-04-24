@@ -2,8 +2,6 @@ package ar.edu.unlp.info.oo2.proyecto_ejemplo;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.time.Duration;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,41 +17,41 @@ class ToDoItemTest {
 	@Test
 	void test() {
 		
-		assertEquals("Pending", tarea.getNameState());
+		assertEquals("Pending", tarea.getStateName());
 		
 		tarea.start();
-		assertEquals("InProgress", tarea.getNameState());
+		assertEquals("InProgress", tarea.getStateName());
 		
 		tarea.togglePause();
-		assertEquals("Paused", tarea.getNameState());
+		assertEquals("Paused", tarea.getStateName());
 		
 		tarea.togglePause();
-		assertEquals("InProgress", tarea.getNameState());
+		assertEquals("InProgress", tarea.getStateName());
 		
 		tarea.start();
-		assertEquals("InProgress", tarea.getNameState());
+		assertEquals("InProgress", tarea.getStateName());
 		
 		tarea.finish();
-		assertEquals("Finished", tarea.getNameState());
+		assertEquals("Finished", tarea.getStateName());
 		
 		tarea.start();
-		assertEquals("Finished", tarea.getNameState());
+		assertEquals("Finished", tarea.getStateName());
 		
 	}
 	
 	@Test
 	public void testMethodTogglePausedErrorAfterFinish() {
 	    Assertions.assertThrows(RuntimeException.class, () -> {
-			assertEquals("Pending", tarea.getNameState());
+			assertEquals("Pending", tarea.getStateName());
 			
 			tarea.start();
-			assertEquals("InProgress", tarea.getNameState());
+			assertEquals("InProgress", tarea.getStateName());
 			
 			tarea.togglePause();
-			assertEquals("Paused", tarea.getNameState());
+			assertEquals("Paused", tarea.getStateName());
 			
 			tarea.finish();
-			assertEquals("Finished", tarea.getNameState());
+			assertEquals("Finished", tarea.getStateName());
 			
 			tarea.togglePause();
 	    });
@@ -62,7 +60,7 @@ class ToDoItemTest {
 	@Test
 	public void testMethodTogglePausedBeforeStart() {
 	    Assertions.assertThrows(RuntimeException.class, () -> {
-			assertEquals("Pending", tarea.getNameState());
+			assertEquals("Pending", tarea.getStateName());
 			tarea.togglePause();
 	    });
 	}

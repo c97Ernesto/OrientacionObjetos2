@@ -1,0 +1,58 @@
+@startuml
+
+class Proyecto <Context>{
+    - fechaInicio: Date
+    - fechaFin: Date
+    - objetivo: String
+    - numeroDeIntegrantes: Integer
+    - montoPorIntegrante: Real
+    - margenDeGanancia: Real 
+
+    + <<create>> Proyecto(nombre: String, fechaFin: Date, 
+    objetivo: String, cantIntegrantes: Integer, double montoPorIntegrante)
+    + aprobarEtapa()
+    + costoDelProyecto(): Real
+    + precioDelProyecto(): Real
+    + modificarMargenDeGanancias(margen: Real)
+    + cancelarProyecto()
+    + setEtapaDelProyecto(etapa: Etapa)
+    + duraciónDelProyecto(): Integer
+    + costoEnPersonal(): Real
+}
+
+abstract class Etapa <State>{
+    
+    + <<create>> Etapa(proyecto: Proyecto)
+    + {abstract} <<abstract>> aprobarEtapa()
+    + costoDelProyecto(): Real
+    + precioDelProyecto(): Real
+    + {abstract} <<abstract>> modificarMargenDeGanancia(margen: Real)
+    + cancelarProyecto()
+}
+
+class EnConstrucción <ConcreteState>{
+    + aprobarEtapa()
+    + modificarMargenDeGanancia(margen: Real)
+}
+
+class EnEvaluación <ConcreteState>{
+    + aprobarEtapa()
+    + modificarMargenDeGanancia(margen: Real)
+}
+
+class Confirmado <ConcreteState>{
+    + aprobarEtapa()
+    + modificarMargenDeGanancia(margen: Real)
+}
+
+
+Etapa "1" <-- Proyecto: - etapaDelProyecto
+
+Proyecto "1" <-- Etapa: # proyecto 
+
+
+Etapa <|-- EnConstrucción
+Etapa <|-- EnEvaluación
+Etapa <|-- Confirmado
+
+@enduml

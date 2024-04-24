@@ -34,7 +34,7 @@ class Mixta <Composite>{
 
   {method} + <<create>>Mixta(Topografia[4] partes)
   {method} + proporcionAgua(): double
-  {method} - totalDeAgua: double
+  {method} - totalDeAgua(): double
   {method} + sonIguales(Topografia tografia): boolean
   {method} + igualAgua(): boolean
   {method} + igualTierra(): boolean

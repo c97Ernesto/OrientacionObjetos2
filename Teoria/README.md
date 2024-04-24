@@ -173,14 +173,18 @@ Cuando se invoca a un método, los propios objetos pasan la solicitud a lo largo
 
 Es un _patrón de diseño de comportamiento con el ámbito de objeto_. Su finalidad es la de poder cambiar el algoritmo o comportamiento de un objeto en tiempo de ejecución. Con este patrón podemos aislar estos comportamientos o algoritmos en clases diferentes y elegir entre uno y otro en tiempo de ejecución.
 
+La idea es que el código cliente se encargue de:
+  1. Proveer la estrategia que desea utilizar.
+  2. Utilizar la clase que hace de **puente** para que se realice la estrategia elegida.
+
 ### Motivación
-Imaginemos que tienes una aplicación de procesamiento de pagos en línea. Originalmente, la aplicación solo acepta pagos con tarjeta de crédito como método de pago. Sin embargo, debido a las demandas de los usuarios, decides expandir las opciones de pago.
+Suponiendo una aplicación de procesamiento de pagos en línea. Originalmente, la aplicación solo acepta pagos con tarjeta de crédito. Sin embargo, debido a las demandas de los usuarios, se decide expandir las opciones de pago.
 
 La primera actualización de la aplicación agrega la capacidad de pagar a través de PayPal. Esto se hace directamente en la clase principal de procesamiento de pagos, lo que resulta en una clase grande y difícil de mantener.
 
-Luego, recibes más solicitudes de los usuarios para agregar opciones de pago adicionales, como transferencia bancaria y pagos mediante criptomonedas.
+Luego, se reciben más solicitudes de los usuarios para agregar opciones de pago adicionales, como transferencia bancaria y pagos mediante cristomonedas.
 
-La clase principal de procesamiento de pagos ahora se ha vuelto monstruosa, y cualquier cambio en un método de pago afecta a todo el sistema, lo que conlleva una alta probabilidad de introducir errores y dificultades para el mantenimiento.
+La clase principal de procesamiento termina siendo demasiado grande, y cualquier cambio en un método de pago afecta a todo el sistema, lo que conlleva una alta probabilidad de introducir errores y dificultades para el mantenimiento.
 
 ### Solución
 Para abordar este problema utilizando el patrón Strategy, separamos los diferentes métodos de pago en estrategias individuales.
@@ -195,7 +199,7 @@ El procesador de pagos delega el trabajo de procesamiento de pagos al objeto de 
 
 ![Strategy-Img1](imgs/Strategy-Img1.svg)
 
-Como resultado, puedes agregar nuevos métodos de pago o modificar los existentes sin tener que cambiar el código de la clase principal de procesamiento de pagos, lo que mejora la modularidad y la facilidad de mantenimiento de la aplicación.
+Como resultado, se pueden agregar nuevos métodos de pago o modificar los existentes sin tener que cambiar el código de la clase principal de procesamiento de pagos, lo que mejora la modularidad y la facilidad de mantenimiento de la aplicación.
 
 ### Estructura
 
@@ -207,9 +211,9 @@ Como resultado, puedes agregar nuevos métodos de pago o modificar los existente
 
 3. Las **ConcreteStrategy** implementan distintas variaciones de un algoritmo que la clase contexto utiliza.
 
-4. La clase _Context_ invoca el método de ejecución en el objeto estrategia viculado cada vezz que necesita ejecutar el algoritmo. La clase _context_ no sabe con que tipo de estrategia se va a encontrar o como se ejecutará el algoritmo.
+4. La clase _Context_ invoca el método de ejecución en el objeto estrategia viculado cada vez que necesita ejecutar el algoritmo. La clase _Context_ no sabe con que tipo de estrategia se va a encontrar o como se ejecutará el algoritmo.
 
-5. El Cliente crea un objeto de estrategia específico y lo pasa a la clase _Context_. La clase context expone un modificador _set_ que permite a los clientes sustiruir la estrategia asociada al contexto durante el tiempo de ejecución.
+5. El _Cliente_ crea un objeto estrategia específico y lo pasa a la clase _Context_. La clase _Context_ expone un modificador _set()_ que permite a los clientes sustituir la estrategia asociada al contexto durante el tiempo de ejecución.
 
 ### Aplicabilidad
 
@@ -219,7 +223,7 @@ Como resultado, puedes agregar nuevos métodos de pago o modificar los existente
 
 - Para aislar la lógica de negocio de una clase, de los detalles de implementación de algoritmos que pueden no ser tan importantes en el contexto de esa lógica.
 
-- Cuando tu clase tenga un enorme operador condicional que cambie entre distintas variantes del mismo algoritmo.
+- Cuando la clase tenga un enorme operador condicional que cambie entre distintas variantes del mismo algoritmo.
 
 ## State
 
@@ -230,11 +234,11 @@ Se caracteriza por modificar su comportamiento dependiendo del estado en el que 
 ### Motivación
 La idea principal del patrón de _state_ es **permitir que el objeto cambie su comportamiento sin cambiar su clase**. Además, al implementarlo, el código debería permanecer más limpio sin muchas declaraciones if/else.
 
-Imaginemos que tenemos un paquete que se envía a una oficina de correos, el paquete en sí se puede pedir, luego entregar a una oficina de correos y finalmente recibirlo un cliente. Ahora, dependiendo del estado real, queremos imprimir su estado de entrega.
+Imginando que hay un paquete que se envía a una oficina de correos, y el paquete en sí se puede pedir, luego entregar a una oficina de correos y finalmente recibirlo un cliente. Ahora, dependiendo del estado real, queremos imprimir su estado de entrega.
 
-El enfoque más simple sería agregar algunos indicadores booleanos y aplicar declaraciones simples if/else dentro de cada uno de nuestros métodos en la clase. Eso no lo complicará mucho en un escenario simple. Sin embargo, podría complicar y contaminar el código cuando tengamos que procesar más estados, lo que resultará en aún más declaraciones if/else.
+El enfoque más simple sería agregar algunos indicadores booleanos y aplicar declaraciones simples if/else dentro de cada uno de nuestros métodos en la clase. Eso no sería muy complicado en un escenario simple. Sin embargo, podría complicar y contaminar el código cuando haya que procesar más estados, lo que resultará en aún más declaraciones if/else.
 
-Además, toda la lógica para cada uno de los estados se distribuiría en todos los métodos. Ahora bien, aquí es donde se podría considerar el uso del patrón Estado. Gracias al patrón de diseño State, podemos encapsular la lógica en clases dedicadas, aplicar el principio de responsabilidad única y el principio abierto/cerrado, tener un código más limpio y fácil de mantener.
+Además, toda la lógica para cada uno de los estados se distribuiría en todos los métodos. Ahora bien, aquí es donde se podría considerar el uso del patrón _State_. Gracias al patrón de diseño State, se peude encapsular la lógica en clases dedicadas, aplicar el principio de responsabilidad única y el principio abierto/cerrado, tener un código más limpio y fácil de mantener.
 
 ![State-Img1](imgs/State-Img1.svg)
 
@@ -268,12 +272,11 @@ Los `ContextState` implementan varios comportamientos asociados a un estado cont
 2. Declarar la interfaz de estado. Aunque se puedan replicar todos los métodos declarados en el contexto, hay que centrarse en los que pueden contener comportamientos específicos del estado.
 
 3. Para cada estado actual, crear una clase derivada de la interfaz de estado. Luego de verificar los métodos del contexto, extraer todo el código relacionado con ese estado para meterlo en la clase recién creada. </br>
-Al mover el código a la clase estado, puede que descubras que depende de miembros privados del contexto. Hay varias soluciones alternativas:
-    - Hacer publicos los campos o métodos.
-    - Convertir el comportamiento que se está extrayendo para ponerlo en un método público en el contexto e invocarlo desde la clase de estado. Esta forma no es la mejor, pero es rápida y siempre se podrá arreglar más adelante.
+Al mover el código a la clase estado, puede que haya problemas con los miembros privados del contexto. Aglunas soluciones alternativas:
+    - Hacer publicos los campos o métodos (getters and setters).
     - Anidar las clases de estado en la clase contexto, sólo si el lenguaje de programación soporta clases anidadas.
 
-4. En la clase contexto, se podría añadir un campo de referencia del tipo de interfaz de estado y un modificador (setter) público que permita sobrescribir el valor de ese campo.
+4. En la clase contexto, añadir un campo de referencia del tipo de interfaz de estado y un modificador (setter) público que permita sobrescribir el valor de ese campo.
 
 5. Repasar el método del contexto y sustituir los condicionales de estado vacíos por llamadas a métodos correspondientes del objeto de estado.
 

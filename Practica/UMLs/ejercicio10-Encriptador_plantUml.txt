@@ -1,0 +1,47 @@
+@startuml
+
+class Mensajero <Client>{
+    + enviar(mensaje: String)
+}
+
+abstract class Conexión {
+    + enviar(mensaje: String)
+}
+
+class ConexiónSegura <Context>{
+    + enviar(mensaje: String)
+}
+
+Interface Encriptador <Strategi>{
+    {abstract} + encriptar(mensaje: String): String
+}
+
+Class RSA <ConcreteStrategi>{
+    + encriptar(String mensaje): String
+}
+
+Class RC4 <ConcreteStrategi>{
+    + encriptar(String mensaje): String
+}
+
+Class Blowfish <ConcreteStrategi>{
+    + encriptar(String mensaje): String
+}
+
+note right of ConexiónSegura::"enviar(mensaje: String)"
+   enviar(mensaje: String){
+      String mensajeEncriptado = this.encriptador.encriptar(mensaje);
+      super.enviar(mensajeEncriptado)
+   }
+end note
+
+ConexiónSegura --> "- encriptador 1" Encriptador
+Conexión <|-- ConexiónSegura
+Mensajero --> "- conexión 1" Conexión
+Encriptador <|-- RSA
+Encriptador <|-- RC4
+Encriptador <|-- Blowfish
+
+
+@enduml
+

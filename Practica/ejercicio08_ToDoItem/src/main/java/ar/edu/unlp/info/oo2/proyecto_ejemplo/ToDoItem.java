@@ -9,11 +9,11 @@ import java.util.List;
 //Context
 public class ToDoItem {
 	
-	private String nameTask;
+	private String taskName;
 	
 	private ToDoItemState state;
 	
-	private String nameState;
+	private String stateName;
 	
 	private LocalDate fechaInicio;
 	
@@ -26,8 +26,8 @@ public class ToDoItem {
 	*/
 	public ToDoItem(String nameTask) {
 		this.state = new Pending(this);
-		this.nameTask = nameTask;
-		this.setNameState(nameState);
+		this.taskName = nameTask;
+		this.setNameState(stateName);
 		
 		this.comments = new ArrayList<String>();
 	}
@@ -100,16 +100,16 @@ public class ToDoItem {
 		this.fechaInicio = fechaInicio;
 	}
 
-	public String getNameTask() {
-		return nameTask;
+	public String getTaskName() {
+		return taskName;
 	}
 
-	public String getNameState() {
-		return nameState;
+	public String getStateName() {
+		return stateName;
 	}
 
 	public void setNameState(String nameState) {
-		this.nameState = nameState;
+		this.stateName = nameState;
 	}
 	
 }
