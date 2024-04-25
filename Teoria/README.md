@@ -256,12 +256,14 @@ Los `ContextState` implementan varios comportamientos asociados a un estado cont
 
 ![State-Img2](imgs/State-Img2.svg)
 
-1. **Context** representa el componente que puede cambiar de estado,  el cual tiene entre sus propiedades el estado actual. 
+1. **Context** representa el componente que puede cambiar de estado,  el cual tiene entre sus atributos el estado actual. 
 
-2. **AbstractState** es la clase base para la generación de los distintos estados. Se recomienda que sea una clase abstracta en lugar de una interface debido a que podemos definir comportamientos por default  y así afectar el comportamiento de todos los estados.
+2. **AbstractState** es la clase base para la generación de los distintos estados. Se recomienda que sea una clase abstracta en lugar de una interface debido a que podemos definir comportamientos por default  y así afectar el comportamiento de todos los estados. </br>
+Estos métodos deben tener sentido para todos los estados concretos para no tener estados que tengan métodos que nunca se usen.
 
 3. **ConcreteState** representan a los componentes los cuales tienen un posible estado por el cual la aplicación puede pasar, por lo que tendremos un `ConcreteState` por cada estado posible, esta clase debe heredar de `AbstractState`.
     - Los objetos de estado pueden almacenar una referencia inversa al objeto de contexto. A través de esta referencia, el estado puede extraer cualquier información requerida del objeto contexto, así como inciari transiciones de estado.
+    - Para evitar la duplicación de código similar a través de varios estados, _se pueden incluir clases abstractas intermedias_ que encapsulen algún comportamiento común
 
 4. Tanto _Context_ como _ConcreteState_ pueden establecer el nuevo estado del contexto.
     - La responsabilidad de decidir cuando cambiar de estado está definida por los mismos estados.
@@ -288,4 +290,51 @@ Al mover el código a la clase estado, puede que haya problemas con los miembros
 - Se recomienda utilizar este patrón cuando haya un objeto que se comporte de manera diferente dependiendo de su estado actual, el número de estados sea muy grande y el código específico del estado cambie con frecuencia
 - Cuando haya una clase plagada con enormes condicionales que alteran el modo en que se comporta la clase de acuerdo con los valores actuales de los campos de la clase.
 - O cuando haya mucho código duplicado por estados similares y transiciones de una máquina de estados basada en condiciones.
+
+## Decorator
+#### También conocido como Wrapper
+Es un patrón estructural que permite añadir funcionalidades a objetos colocando estos objetos dentro de objetos encapsuladores especiales que contienen estas funcionalidades.
+
+
+### f
+Cuando se quiere alterar la funcionalidad de un objeto, lo primero que uno piensa es en extender una clase. Sin embargo, **la herencia tiene varias limitaciones** importantes.
+- La herencia **es estática**. No se puede alterar la funcionalidad de un objeto existente el tiempo de ejecución. Solo se puede sustituir el objeto completo por otro creado a partir de una subclase diferente.
+- Las **subclases solo pueden tener una clase padre**. En la mayoría de los lenguajes, la herencia no permite a una clase heredar comportamientos de varias clases al mismo tiempo.
+
+Una de las formas de superar estas limitaciones es empleando la _**Agregación**_ o la _**Composición**_ en lugar de la _Herencia_. Ambas alternativas funcionan prácticamente del mismo modo: un objeto tiene una referencia a otro y le delega parte del trabajo, mientras  que con la herencia, el propio objeto puede realizar ese trabajo, heredando el comportamiento de su superclase.
+  - En la **Agregación** el objeto X contiene objetos Y. Y puede existir sin X.
+  - En la **Compoición** el objeto X está compuesto de objetos Y. X Administra el ciclo de vida de Y, además de que Y no puede existir sin X.
+
+Con esta nueva solución se puede sustituir fácilmente el objeto "ayudante" vinculado por otro, cambiando el comportamiento del contenedor durante el tiempo de ejecución. Un objeto puede utilizar el comportamiento de varias clases con referencias a varios objetos, delegándole todo tipo de tareas. La agregación/composición es el principio clave que se esconde tras muchos patrones de diseño.
+
+**“Wrapper”** (envoltorio) es el **sobrenombre alternativo del patrón Decorator**, que expresa claramente su idea principal. Un _wrapper_ es un objeto que puede vincularse con un objeto _objetivo_. El wrapper contiene el mismo grupo de métodos que el objetivo y le delega todas las solicitudes que recibe. No obstante, el wrapper puede alterar el resultado haciendo algo antes o después de pasar la solicitud al objetivo.
+
+¿Cuándo se convierte un wrapper en decorator? El wrapper implementa la misma interfaz que el objeto envuelto. Éste es el motivo por el que, desde la perspectiva del cliente, estos objetos son idénticos. Haciendo que el campo de referencia del wrapper acepte cualquier objeto que siga esa interfaz, permitirá envolver un objeto en varios wrappers, añadiéndole el comportamiento combinado de todo lo demás.
+
+### Estrucutra
+
+![DecoratorStructure](imgs/DecoratorStructure.svg)
+
+**Component:** es la interface (puede ser `Inteface` o `abstract Class`) que define la funcionalidad y de la cuál se hereda la clase concreta y los decoradores.
+
+**ConcreteComponent:** es la implementación principal y cuya clase recibirá los decoradores para agregar funcionalidad extra dinámicamente.
+
+**Decorador:** puede ser `abstract Class` o no que define el decorador que hereda de la interfaz `Component` y de la cual luego se crearán todos los demás decoradores.</br>
+El decorador debe mantener la referencia al objeto original a fin de invocarlo y luego agregarle otras funcionalidades propias del decorador. Cada decorador tiene una relación con el componente de tipo has-a(tiene un).
+
+**ConcreteDecorator:** son las clases que extienden o implementan el Decorator con la funcionalidad acotada.
+
+### Implementación
+1. Asegurarse de que el dominio de negocio puede representarse como un componente primario con varias capas opcionales encima.
+
+2. Decidir qué métodos son comunes al componente primario y las capas opcionales. Crear una interfaz/clase asbrtacta de componente y declara esos métodos en ella.
+
+3. Crear una clase concreta de componente y define en ella el comportamiento base.
+
+4. Crear una clase base decoradora. Debe tener un campo para almacenar una referencia a un objeto wrapper. El campo debe declararse con el tipo de interfaz de componente para permitir la vinculación a componentes concretos, así como a decoradores. La clase decoradora base debe delegar todas las operaciones al objeto envuelto.
+
+5. Asegurarse de que todas las clases implementan la interfaz de componente.
+
+6. Crear decoradores concretos extendiéndolos a partir del decorador. Un decorador concreto debe ejecutar su comportamiento antes o después de la llamada al método padre (que siempre delega al objeto envuelto).</br>
+El código cliente debe ser responsable de crear decoradores y componerlos del modo que el cliente necesite.
 

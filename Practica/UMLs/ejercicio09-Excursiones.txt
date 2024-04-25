@@ -1,0 +1,63 @@
+@startuml
+
+class Persona {
+    - nombre: String
+    - apellido: String
+    - email: String
+}
+
+class Excursion {
+    - nombre: String
+    - fechaInicio: Date
+    - fechaFin: Date
+    - puntoEncuentro: String
+    - costo: Real
+    - cupoMin: Integer
+    - cupoMax: Integer
+
+    + <<create>>Excursion(nombre: String, fechaInicio: Date, fechaFin: Date,
+    puntoEncuentro: String, costo: Real, cupoMin: Integer, cupoMax: Integer)
+    + actualizarEstado(estado: ListState)
+    + inscribirUsuario(persona Persona)
+    + obtenerInformacion(): String
+    + infoBasicaDeExcursion(): String
+    + emailsDeInscriptos(): String[*]
+    + cupoMinAlcanzado(): Boolean
+    + cupoMaxAlcanzado(): Boolean
+
+}
+
+abstract class ListState {
+
+    + <<create>> ListState(Escursion excursion)
+    + {abstract} <<abstract>> inscribirUsuario(Persona persona)
+    + {abstract} <<abstract>> infoDeEstadoDeExcursion(): String
+}
+
+class ListaProvisoria {
+
+}
+
+class ListaDefinitiva {
+
+}
+
+class ListaCompleta {
+
+}
+
+
+ListState "1" --> Excursion: # excursion
+
+ListState <--o "1" Excursion: - estado 
+
+Persona <-- Excursion: - inscriptos[*]
+Persona <-- Excursion: - enEspera[*]
+
+ListaProvisoria --|> ListState
+ListaDefinitiva --|> ListState
+ListaCompleta --|> ListState
+
+
+
+@enduml
