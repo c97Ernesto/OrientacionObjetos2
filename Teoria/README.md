@@ -161,13 +161,7 @@ Cuando se invoca a un método, los propios objetos pasan la solicitud a lo largo
 - El **Contenedor** (también llamado compuesto) es un elemento que tiene subelementos: hojas u otros contenedores. Un contenedor no conoce las clases concretas de sus hijos. Funciona con todos los subelementos únicamente a través de la interfaz componente.
   - Al recibir una solicitud, un contenedor delega el trabajo a sus subelementos, procesa los resultados intermedios y devuelve el resultado final al cliente.
 
-### Consecuencias
-- Define jerarquías de clase consistentes de objetos primitivos y compuestos. Los objetos primitivos pueden componerse en objetos complejos, los que a su vez pueden componerse recursivamente
-- Simplifica los objetos cliente. Los clientes usualmente no saben (y no deberían preocuparse) acerca de sis están manejando un compuesto o un simple.
-- Hace más fácil el agreado de nuevos tipos de componentes porque los clientes no tienen que cambiar cuando aparecen nuevas clases componentes.
-- No permite restringuir las estructuras de composición (cuando ciertos compuestos pueden armarse solo con cierto tipo de atómicos).
 
-#### [Ejemplo](EjemploComposite.md#ejemplo-composite)
 
 ## Strategy
 
@@ -293,10 +287,11 @@ Al mover el código a la clase estado, puede que haya problemas con los miembros
 
 ## Decorator
 #### También conocido como Wrapper
-Es un patrón estructural que permite añadir funcionalidades a objetos colocando estos objetos dentro de objetos encapsuladores especiales que contienen estas funcionalidades.
+Es un patrón estructural que permite agregar nuevas funciones a un objeto envolviéndolo con otro objeto que proporcione la funcionalidad deseada. El objeto empaquetado permanece sin cambios y la nueva funcionalidad se agrega dinámicamente en tiempo de ejecución </br>
+Es un patrón que se basa en el principio de composición sobre la herencia, lo que significa que "debemos preferir la composición por sobre la herencia" para agregar funcionalidad a un objeto.
 
 
-### f
+### Motivación
 Cuando se quiere alterar la funcionalidad de un objeto, lo primero que uno piensa es en extender una clase. Sin embargo, **la herencia tiene varias limitaciones** importantes.
 - La herencia **es estática**. No se puede alterar la funcionalidad de un objeto existente el tiempo de ejecución. Solo se puede sustituir el objeto completo por otro creado a partir de una subclase diferente.
 - Las **subclases solo pueden tener una clase padre**. En la mayoría de los lenguajes, la herencia no permite a una clase heredar comportamientos de varias clases al mismo tiempo.
@@ -313,16 +308,16 @@ Con esta nueva solución se puede sustituir fácilmente el objeto "ayudante" vin
 
 ### Estrucutra
 
-![DecoratorStructure](imgs/DecoratorStructure.svg)
+![DecoratorStructure](imgs/DecoratorStructure.png)
 
-**Component:** es la interface (puede ser `Inteface` o `abstract Class`) que define la funcionalidad y de la cuál se hereda la clase concreta y los decoradores.
+- **Component:** es la interface (puede ser `Inteface` o `abstract Class`) que define la funcionalidad y de la cuál se hereda la clase concreta y los decoradores.
 
-**ConcreteComponent:** es la implementación principal y cuya clase recibirá los decoradores para agregar funcionalidad extra dinámicamente.
+- **ConcreteComponent:** es la implementación principal y cuya clase recibirá los decoradores para agregar funcionalidad extra dinámicamente.
 
-**Decorador:** puede ser `abstract Class` o no que define el decorador que hereda de la interfaz `Component` y de la cual luego se crearán todos los demás decoradores.</br>
+- **Decorador:** puede ser `abstract Class` o no que define el decorador que hereda de la interfaz `Component` y de la cual luego se crearán todos los demás decoradores.</br>
 El decorador debe mantener la referencia al objeto original a fin de invocarlo y luego agregarle otras funcionalidades propias del decorador. Cada decorador tiene una relación con el componente de tipo has-a(tiene un).
 
-**ConcreteDecorator:** son las clases que extienden o implementan el Decorator con la funcionalidad acotada.
+- **ConcreteDecorator:** son las clases que extienden o implementan el Decorator con la funcionalidad acotada.
 
 ### Implementación
 1. Asegurarse de que el dominio de negocio puede representarse como un componente primario con varias capas opcionales encima.
@@ -331,10 +326,31 @@ El decorador debe mantener la referencia al objeto original a fin de invocarlo y
 
 3. Crear una clase concreta de componente y define en ella el comportamiento base.
 
-4. Crear una clase base decoradora. Debe tener un campo para almacenar una referencia a un objeto wrapper. El campo debe declararse con el tipo de interfaz de componente para permitir la vinculación a componentes concretos, así como a decoradores. La clase decoradora base debe delegar todas las operaciones al objeto envuelto.
+4. Crear una clase decoradora. Debe tener un campo para almacenar una referencia a un objeto wrapper. El campo debe declararse con el tipo de interfaz de componente para permitir la vinculación a componentes concretos, así como a decoradores. La clase decoradora debe delegar todas las operaciones al objeto envuelto.
 
 5. Asegurarse de que todas las clases implementan la interfaz de componente.
 
 6. Crear decoradores concretos extendiéndolos a partir del decorador. Un decorador concreto debe ejecutar su comportamiento antes o después de la llamada al método padre (que siempre delega al objeto envuelto).</br>
 El código cliente debe ser responsable de crear decoradores y componerlos del modo que el cliente necesite.
 
+### Pros y Contras del patrón
+
+
+
+## Proxy
+
+### Motivación
+
+### Estructura
+
+![ProxyStructure](imgs/ProxyStructure.png)
+
+### Aplicaciones
+- **Virtual Proxy:** demorar la construcción de un objeto hasta que sea realmente necesario, cuando sea poco eficiente acceder al objeto real.
+
+- **Protección Proxy:** Restringir el acceso a un objeto por seguridad.
+
+- **Remote Proxy:** representar un objeto remoto en el espacio de memoria local. Es la forma de implementar objetos destribuídos. Estos proxies se ocupan de la comunición con el objeto remoto, y de serializar/deserializar los mensajes y resultados.
+  - Acceder a objetos que se encuentran en otro espacio de memoria, en una arquitectura distribuida.
+  - El proxy empaqueta el request, lo envía a través de la red al objeto real, espera la respuesta, desempaqueta la respuesta y retorna el resultado.
+  - En este contexto el proxy suele utilizarse con otro objeto que se encarga de encontrar la ubicación del objeto real. Este objeto se denomina _Broker_, del patrón de sus mismo nombre.
