@@ -310,14 +310,13 @@ Con esta nueva solución se puede sustituir fácilmente el objeto "ayudante" vin
 
 ![DecoratorStructure](imgs/DecoratorStructure.png)
 
-- **Component:** es la interface (puede ser `Inteface` o `abstract Class`) que define la funcionalidad y de la cuál se hereda la clase concreta y los decoradores.
+- **Component:** es la interfaz común que se define tanto para los componentes contretos como para los decoradores. Especifica las operaciones que se pueden realizar sobre los objetos.
 
 - **ConcreteComponent:** es la implementación principal y cuya clase recibirá los decoradores para agregar funcionalidad extra dinámicamente.
 
-- **Decorador:** puede ser `abstract Class` o no que define el decorador que hereda de la interfaz `Component` y de la cual luego se crearán todos los demás decoradores.</br>
-El decorador debe mantener la referencia al objeto original a fin de invocarlo y luego agregarle otras funcionalidades propias del decorador. Cada decorador tiene una relación con el componente de tipo has-a(tiene un).
+- **Decorador:** tiene una referencia a un objeto _component_, los decoradores son los responsables de agregar nuevos comportamientos al objeto _component_ envuelto. Cada decorador tiene una relación con el componente de tipo has-a(tiene un).
 
-- **ConcreteDecorator:** son las clases que extienden o implementan el Decorator con la funcionalidad acotada.
+- **ConcreteDecorator:** son las clases concretas que extiendes de la clase `Decorator`. Agregan comportamiento específico o responsabilidades al componente. Cada clase concreta le puede agregar más comportamientos específicos al componente.
 
 ### Implementación
 1. Asegurarse de que el dominio de negocio puede representarse como un componente primario con varias capas opcionales encima.
@@ -341,16 +340,33 @@ El código cliente debe ser responsable de crear decoradores y componerlos del m
 
 ### Motivación
 
+
 ### Estructura
 
 ![ProxyStructure](imgs/ProxyStructure.png)
 
-### Aplicaciones
-- **Virtual Proxy:** demorar la construcción de un objeto hasta que sea realmente necesario, cuando sea poco eficiente acceder al objeto real.
+**Subject** define la interfaz común compartida por las clases `RealSubject` y `Proxy`. Declara los métodos que utiliza el _proxy_ para controlar el acceso al _realSubject_.
 
-- **Protección Proxy:** Restringir el acceso a un objeto por seguridad.
+**RealSubject** es el objeto real que representa al _proxy_. Contiene la implentación real de la lógica empresarial o el recurso al que el código del cliente desea acceder.
+
+**Proxy** actúa como _surrogate_ (sustituto) del _realSubject_. Controla el acceso el objeto real y puede proporcionar funciones adicionales como carga diferida, control de acceso o registro.
+
+### Aplicaciones
+- **Virtual Proxy:** Cuando se quiere una versión simplificada de un objeto complejo o pesado. En este caso podemos representarlo con un objeto esqueleto que carga el objeto original pedido, también llamado inicialización diferida.
+  - demorar la construcción de un objeto hasta que sea realmente necesario, cuando sea poco eficiente acceder al objeto real.
+
+- **Protección Proxy:** Cuando queremos agregar una capa de seguridad al objeto subyacente original para porporcionar acceso controlado según los derechos de acceso del cliente.
+  - restringir el acceso a un objeto por seguridad.
 
 - **Remote Proxy:** representar un objeto remoto en el espacio de memoria local. Es la forma de implementar objetos destribuídos. Estos proxies se ocupan de la comunición con el objeto remoto, y de serializar/deserializar los mensajes y resultados.
   - Acceder a objetos que se encuentran en otro espacio de memoria, en una arquitectura distribuida.
   - El proxy empaqueta el request, lo envía a través de la red al objeto real, espera la respuesta, desempaqueta la respuesta y retorna el resultado.
   - En este contexto el proxy suele utilizarse con otro objeto que se encarga de encontrar la ubicación del objeto real. Este objeto se denomina _Broker_, del patrón de sus mismo nombre.
+
+### Implementacíon
+1. Si no hay una interfaz de `Subject` preexistente, crear una para que los objetos de _proxy_ y de _realSubject_ sean intercambiables. No siempre resulta posible extraer la interfaz de la clase _realSubject_.</br>
+El plan B consiste en convertir el proxy en una subclase de `realSubject`.
+2. Crear la clase `Proxy`. Debe tener un campo para almacenar la referencia al servicio. Normalmente los proxies crean y gestionan los ciclos de vida completo de sus servicios. En raras ocasiones, el cliente pasa un _subject_ a través de un constructor.
+3. Implementar los métodos de `Proxy` según sus propósitos. En la mayoría de los casos, después de hacer cierta labor, el _proxy_ debería delegar el trabajo a un objeto de _subject_.
+4. Considerar introducir un método de cración que decida si el cliente obtiene un _proxy_ o una _realSubject_. Puede tratarse simplemente de un método estático en la clase `Proxy`.
+5. Considerar implementar la inicialización diferida para el objeto de servicio.

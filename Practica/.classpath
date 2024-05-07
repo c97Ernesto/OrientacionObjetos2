@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" path="ejercicio01_RedSocial/src/main/java"/>
+	<classpathentry kind="src" path="ejercicio02_PiedraPapelTijera/src/main/java"/>
+	<classpathentry kind="src" path="ejercicio02_PiedraPapelTijera/src/test/java"/>
+	<classpathentry kind="src" path="ejercicio03_JsonEnJava/src/main/java"/>
+	<classpathentry kind="src" path="ejercicio03_JsonEnJava/src/test/java"/>
+	<classpathentry kind="src" path="ejercicio04_CalculoDeSueldos/src/main/java"/>
+	<classpathentry kind="src" path="ejercicio04_CalculoDeSueldos/src/test/java"/>
+	<classpathentry kind="src" path="ejercicio05_MediaPlayer/src/main/java"/>
+	<classpathentry kind="src" path="ejercicio06_Topografias/src/main/java"/>
+	<classpathentry kind="src" path="ejercicio06_Topografias/src/test/java"/>
+	<classpathentry kind="src" path="ejercicio07_FileSystem/src/main/java"/>
+	<classpathentry kind="src" path="ejercicio07_FileSystem/src/test/java"/>
+	<classpathentry kind="src" path="ejercicio08_ToDoItem/src/main/java"/>
+	<classpathentry kind="src" path="ejercicio08_ToDoItem/src/test/java"/>
+	<classpathentry kind="src" path="ejercicio09_Excursiones/src/main/java"/>
+	<classpathentry kind="src" path="ejercicio09_Excursiones/src/test/java"/>
+	<classpathentry kind="src" path="ejercicio10_Encriptador/src/main/java"/>
+	<classpathentry kind="src" path="ejercicio11_Administrador-de-Proyectos/src/main/java"/>
+	<classpathentry kind="src" path="ejercicio11_Administrador-de-Proyectos/src/test/java"/>
+	<classpathentry kind="src" path="ejercicio12_DispositivoMovil-y-Conexiones/src/main/java"/>
+	<classpathentry kind="src" path="ejercicio12_DispositivoMovil-y-Conexiones/src/test/java"/>
+	<classpathentry kind="output" path="ejercicio01_RedSocial/target/classes"/>
+</classpath>

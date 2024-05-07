@@ -3,10 +3,10 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>ar.edu.unlp.info.oo2</groupId>
-  <artifactId>proyecto-ejemplo</artifactId>
-  <version>0.0.1</version>
+  <artifactId>ejercicio14_Acceso-a-la-BaseDeDatos</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
 
-  <name>proyecto-ejemplo</name>
+  <name>ejercicio14_Acceso-a-la-BaseDeDatos</name>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
