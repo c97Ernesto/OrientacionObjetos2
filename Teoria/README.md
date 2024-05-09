@@ -8,7 +8,7 @@ Es una **patrón de diseño estructural** que permite la colaboración de objeto
 - Adaptar la interface de una clase a la interface que espera el cliente (asumiendo que ambas interfaces son diferentes).
 - Permitir que interfaces incompatibles trabajen juntas.
 
-Cuando se habla de "interfaces", nos referimos a los elementos o firmas que una clase expone para que otras puedan utilizarla. No hace referencia a una clase `Interface`.
+> Cuando se habla de "interfaces", nos referimos a los elementos o firmas que una clase expone para que otras puedan utilizarla. No hace referencia a una clase `Interface`.
 
 ### Implementación
 Para este patrón se necesitan ciertos prerequisitos:
@@ -64,13 +64,23 @@ Es el único patrón que tiene los dos ámbitos, clases y objetosm ya que podemo
 ![Adapter-Img3](imgs/Adapter-Img3.png)
 
 #### Roles fundamentales en la estructura del _Adapter_.
-- **_Target_** (Shape): define la interfaz específica del dominio que utiliza el Cliente.
+- **_Target_** (Interfaz con el Cliente): define la interfaz específica del dominio que utiliza el Cliente.
 
-- **_Client_** (DrawingEditor): colabora con objetos que satisfacen la interfaz _Target_.
+- **_Client_** (Cliente): colabora con objetos que satisfacen la interfaz _Target_.
 
-- **_Adaptee_** (TextView): define una interfaz que necesita ser adaptada.
+- **_Adaptee_** (Servicio): define una interfaz que necesita ser adaptada. _Targer_ no puede utilizar directamente esta clase porque cuenta con una interfaz incompatible.
 
-- **_Adapter_** (TextShape): adapta la interfaz de _Adaptec_ a la interfaz de _Target_
+- **_Adapter_** (Adapter): adapta la interfaz _Adaptee_ a la interfaz _Target_. Recibe llamadas de _target_ y las traduce en llamadas al objeto envuelto de la clase _Adapee_.
+
+### Implementación
+1. Asegurarse de que hay al menos dos clases con interfaces incompatibles:
+    - Una clase `Adaptee` que será la cual vamos a adaptar porque no se puede modificar (por lo general de un tercero, heredada, o con muchas dependencias existentes).
+    - Otra clase `Target` que necesita de la clase `Adaptee`.
+
+2. Crear la clase `Adapter` que heredará los necesario de la interfaz de `Target`.
+3. Añadir en la clase `Adapter` un atributo para almacenar una referencia al objeto _adaptee_ (opcional). En la práctica lo común sería inicializar el atributo en el constructor, pero en ocasiones es adecuado pasarlo al _adapter_ cuando se invocan sus métodos.
+
+4. Implementar todos los métodos de la clase `Target` a la clase `Adapter`. La clase `Adaper` deberá delegar la mayor parte del trabajo al objeto _adaptee_, gestinando solamente la interfaz o la conversión de los datos.
 
 
 ## Template Method
@@ -367,6 +377,6 @@ El código cliente debe ser responsable de crear decoradores y componerlos del m
 1. Si no hay una interfaz de `Subject` preexistente, crear una para que los objetos de _proxy_ y de _realSubject_ sean intercambiables. No siempre resulta posible extraer la interfaz de la clase _realSubject_.</br>
 El plan B consiste en convertir el proxy en una subclase de `realSubject`.
 2. Crear la clase `Proxy`. Debe tener un campo para almacenar la referencia al servicio. Normalmente los proxies crean y gestionan los ciclos de vida completo de sus servicios. En raras ocasiones, el cliente pasa un _subject_ a través de un constructor.
-3. Implementar los métodos de `Proxy` según sus propósitos. En la mayoría de los casos, después de hacer cierta labor, el _proxy_ debería delegar el trabajo a un objeto de _subject_.
+3. Implementar los métodos de `Proxy` según sus propósitos. En la mayoría de los casos, después de hacer cierta labor, el _proxy_ debería delegar el trabajo a un objeto de _realSubject_.
 4. Considerar introducir un método de cración que decida si el cliente obtiene un _proxy_ o una _realSubject_. Puede tratarse simplemente de un método estático en la clase `Proxy`.
 5. Considerar implementar la inicialización diferida para el objeto de servicio.
