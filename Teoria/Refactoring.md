@@ -49,6 +49,11 @@ También se lo puede denominar como un **proceso** a través del cual se cambia 
   - _Problema_: El nombre del método no es lo suficientemente explicativo para deducir que función cumple.
   - _Solución_: Renombrar el método.
 
+#### Simplifying Conditional Expressions
+- **[Replace Conditional with Polymorphism](#replace-conditional-with-polymorphism):**
+  - _Problema_: Hay un condicional que realiza varias acciones según el tipo de objeto o las propiedades.
+  - _Solución_: Crear subclases que coincidan con las ramas del condicional. El resultado es que la implementación adecuada se logrará mediante polimorfismo dependiendo de la clase objeto.
+
 #### Moving Features between Objects
 - **[Move Method](#move-method):**
   - _Problema_: Un método es utilizado más en otra clase que en su propia clase.
@@ -67,6 +72,14 @@ También se lo puede denominar como un **proceso** a través del cual se cambia 
   - _Problema_: ... 
   - _Solución_: ...
 
+#### Dealing with Generalization
+- **[Pull Up Method](#pull-up-method)**
+  - _Problema_: Las subclases tienen métodos que realizan el mismo trabajo. 
+  - _Solución_: Hacer en un mismo método el mismo trabajo que realizan las sublcases y moverlos a la superclase relevante.
+
+- **[Form Template Method](#form-template-method)**
+  - _Problema_: Las subclases implementan algoritmos que tienen pasos similares en el mismo orden. 
+  - _Solución_: Mover la estructura del algoritmo y los pasos similares a una superclase dejando la implementación de los diferentes pasos en las subclases.
 
 # Refactorings
 
@@ -85,6 +98,10 @@ Esta refactorización puede sentar las bases para aplicar _Extract Method_ en al
 ### Pasos para la refactorización
 1. Asegurarse de que se asigne un valor a la variable una vez y sola una vez dentro del método. De lo contrario, usar **Split Temporary Variable** para asegurarse de que la variable se use solo para almacenar el resultado de la expresión.
 2. Utilizar **Extrar Method** para colocar la expresión de interés en un nuevo método. Asegurarse de que este método solo devuelva un valor y no cambie el estado del objeto. Si el método afecta al estado visible del objeto, utilizar Separete **Query from Modifier**.
+
+## Replace Loop with Pipeline
+Reemplazar estructuras de bucles por una colección de pipelines
+
 
 ## Move Method
 - Cuando movemos un método a una clase que contenga la mayoría de los datos utilizados por el método, haciendo que las clases sean más coherentes internamente.
@@ -111,8 +128,60 @@ Esta refactorización puede sentar las bases para aplicar _Extract Method_ en al
 
 4. Si las variables se declaran antes del código que se extrajo, se deberán pasar como parámetros al nuevo método. Otra manera de solucionar esto podría ser deshaciendo las variables recurriendo a **Replace Temp with Query**
 
-## Replace Loop with Pipeline
-Reemplazar estructuras de bucles por una colección de pipelines
+## Pull Up Method
+### Mecánica
+1. Investigar los métodos los métodos idénticos. Si hacen lo mismo pero no son idénticos, formatearlos para que tengan un cuerpo idéntico.
+
+2. Verificar todas las llamadas de métodos y referencias de variables dentro del cuerpo del método.
+
+3. Si los métodos tienen diferentes firmas, usar **Change Function Declaration** para llevarlos a la superclase.
+
+4. Crear un nuevo método en la superclase, copiar el cuerpo de uno de los métodos.
+
+5. Correr los test.
+
+6. Eliminar un método de la subclase.
+
+7. Probar.
+
+8. Eliminar los demás métodos de las sublcases.
+
+### Ejemplo
+```java
+class Employee {...}
+
+class Salesman extends Employee {
+  get name() {...}
+}
+
+class Engineer extends Employee {
+  get name() {...}
+}
+```
+#### Después de aplicar Pull Up Mehtod:
+```java
+class Employee {
+  get name() {...}
+}
+
+class Salesman extends Employee {...}
+class Engineer extends Employee {...}
+```
+
+
+## Replace Conditional with Polymorphism
+Para esta técnica tiene que haber una jerarquía de clases que contendrán comportamientos alternativos. Si no la hay se derberá crear.
+
+Habra que reemplazar el código de tipo con subclases y crear subclases para todos los valores de una propiedad de objeto en particular.
+
+### Tratamiento
+1. Si el condicional está en un método que también realiza otras acciones, aplicar **Extract Method**.
+
+2. Para cada subclase de la jerarquía, redefinir el método que contiene el condicional y copiar el código de la rama condional correspondiente en esa ubicación.
+
+3. Eliminar la rama del condicional.
+
+4. Repetir el reemplazo hasta que el condicional se encuentre vacío.
 
 # Cod Smells
 
