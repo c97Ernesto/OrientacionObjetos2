@@ -16,7 +16,7 @@ También se lo puede denominar como un **proceso** a través del cual se cambia 
 - Long Method
 - Large Class
 - Long Parameter List
-- 
+- [Primitive Obsession](#primitive-obsession)
 -
 
 #### Object-Orientation Abusers
@@ -37,8 +37,8 @@ También se lo puede denominar como un **proceso** a través del cual se cambia 
 -
 
 #### Couplers
--  **[Feature Envy](#feature-envy)**
--
+- **[Feature Envy](#feature-envy)**
+- **[Inappropiate Intimacy](#inappropiate-intimacy)**
 -
 -
 
@@ -58,6 +58,15 @@ También se lo puede denominar como un **proceso** a través del cual se cambia 
 - **[Move Method](#move-method):**
   - _Problema_: Un método es utilizado más en otra clase que en su propia clase.
   - _Solución_: Crear un nuevo método en la clase que más lo use y luego mover el código del método anterior a esa clase. Convertir el código del método original en una referencia al nuevo método en la otra clase o eliminarlo por completo.
+
+#### Organization Data
+- **[Replace Type Code with Subclasses](#replace-type-code-with-subclasses):**
+  - _Problema_: Se usan valores primitivos para condicionales en métodos.
+  - _Solución_: Crear Subclases para reemplazar los valores primitivos. Luego extraer comportamiento relevante de la clase original. Y por último reemplazar el algoritmo condicional con polimorfismo.
+
+- **[Replace Data Values with Object](#replace-data-values-with-object):**
+  - _Problema_: Una clase o grupo de clases tienen un campo donde ese campo tiene su propio comportamiento y datos asosciados.
+  - _Solución_: Se crea una clase, colocando el campo anterior y su comportamiento en la clase y almacenar el objeto de la clase en la clase original.
 
 #### Composing Methods
 - **[Extract Method](#extract-method)**
@@ -97,6 +106,7 @@ También se lo puede denominar como un **proceso** a través del cual se cambia 
 Esta refactorización puede sentar las bases para aplicar _Extract Method_ en alguna parte de un método demasiado largo
 ### Pasos para la refactorización
 1. Asegurarse de que se asigne un valor a la variable una vez y sola una vez dentro del método. De lo contrario, usar **Split Temporary Variable** para asegurarse de que la variable se use solo para almacenar el resultado de la expresión.
+
 2. Utilizar **Extrar Method** para colocar la expresión de interés en un nuevo método. Asegurarse de que este método solo devuelva un valor y no cambie el estado del objeto. Si el método afecta al estado visible del objeto, utilizar Separete **Query from Modifier**.
 
 ## Replace Loop with Pipeline
@@ -183,6 +193,121 @@ Habra que reemplazar el código de tipo con subclases y crear subclases para tod
 
 4. Repetir el reemplazo hasta que el condicional se encuentre vacío.
 
+## Form Template Method
+Cuando hay métodos en varias clases que comparten un algoritmo similar con pasos específicos que varían. O cuando se desea estandarizar el flujo de un algoritmo, permitiendo que las subclases definan los detalles de ciertos pasos.
+
+
+### Mecánica
+1. Encontrar el método que es similar en todas las subclases y extraer sus partes en: métodos idénticos (misma signatura y cuerpo en las subclases) o métodos únicos (distinta signatura y cuerpo).
+
+2. Aplicar **Pull Up Method** para los métodos idénticos.
+
+3. Aplicar **Rename Method** sobre los únicos hasta que el método similar quede con cuerpo idéntico en las subclases.
+
+4. Compilar y testear después de cada "rename".
+
+5. Aplicar **Rename Method** sobre los métodos similares en las subclases (esqueleto). 
+
+6. Aplicar **Pull Up Method** sobre los métodos similares.
+
+7. Definir métodos abstractos en la superclase por cada método único en las subclases.
+
+8. Compilar y testear.
+
+### Ejemplo
+
+```java
+public abstract class Party { }
+
+public class Person extends Party {
+  private String firstName;
+  private String lastName;
+  private Date dob;
+  private String nationality;
+  public void printNameAndDetails() {
+    System.out.println("Name: " + firstName + " " + lastName);
+    System.out.println("DOB: " + dob.toString() + ", Nationality: " + nationality);
+  }
+}
+
+public class Company extends Party {
+  private String name;
+  private String companyType;
+  private Date incorporated;
+  public void PrintNameAndDetails() {
+    System.out.println("Name: " + name + " " + companyType);
+    System.out.println("Incorporated: " + incorporated.toString());
+  }
+}
+```
+#### Después de aplicar refactoring
+```java
+public abstract class Party {
+  public void PrintNameAndDetails() {
+    printName();
+    printDetails();
+  }
+  public abstract void printName();
+  public abstract void printDetails();
+}
+
+public class Person extends Party {
+  private String firstName;
+  private String lastName;
+  private Date dob;
+  private String nationality;
+  public void printDetails() {
+  System.out.println("DOB: " + dob.toString() + ", Nationality: " + nationality);
+  }
+  public void printName() {
+    System.out.println("Name: " + firstName + " " + lastName);  
+  }
+}
+
+public class Company extends Party {
+  private String name;
+  private String companyType;
+  private Date incorporated;
+  public void printDetails() {
+    System.out.println("Incorporated: " + incorporated.toString());
+  }
+  public void printName() {
+    System.out.println("Name: " + name + " " + companyType);
+  }
+}
+```
+
+## Replace Type Code with Subclasses
+Éste refactoring se usa cuando el comportamiento asociado con un tipo e código está intrínsecamente asociado a la clase base y se maneja mejor mediante la herencia
+
+### Mecánica
+1. Encapsulamos el campo que contiene el código de tipo con un método getter. Este paso garantiza que todos los accesos al campo tipo se realicen a través del método.
+
+2. Convertimos en privado el constructor de la clase y creamos un método que seleccione la clase apropiada según el tipo.
+
+3. Creamos una subclase única para cada valor del tipo primitivo
+
+4. Eliminamos el campo con código de tipo primitivo de la superclase. Convertimos en abstarcta la clase padre.
+
+5. Movemos los campos y métodos de la superclase a las subclases correspondientes utilizando Push Down Field y Push Down Method
+
+6. Usamos Replace Conditional with Polimorphism para deshacerse de las condiciones que usan el código de tipo.
+
+## Replace Data Values with Object
+
+### Tratamiento
+Antes de comenzar, verificar si hay referencias directas a la variable dentro de la clase. Si es así utilizar **Self Encapsulate** para ocultarlo de la clase original.
+
+1. Crear una nueva clase y copiar el campo y un getter. Crear un constructor que acepte el valor del campo. Esta clase no tendrá un setter, ya que cada nuevo valor del campo que se envíe a la clase original creará un nuevo objeto de la variable.
+
+2. En la clase original, campiar el tipo del campo a la nueva clase.
+
+3. En el getter de la clase original, invocar al getter del objeto asociado.
+
+4. En el setter crear un nuevo valor del objeto. También es posible crear un nuevo objeto en el constructor si los valores iniciales se habían establecido ahí con anterioridad para el campo.
+
+###
+
 # Cod Smells
 
 ## Feature Envy
@@ -195,6 +320,20 @@ Como regla básica si las cosas cambian al mismo tiempo, se deben mantener ene e
   - Si solo una parte de un método accede a los datos de otro objeto, hay que utilizar **Extract Method** para mover la parte en cuestión.
 
   - Si un método utiliza funciones de varias otras clases, primero hay que determinar que clase contiene la mayor parte de los datos utilizados. Luego colocar el método en esta clase junto con los demás datos. Y en alternancia usar **Extract Method** para divir el método en varias partes que se puedan colocar en diferentes lugares en diferentes clases.
+
+## Inappropiate Intimacy
+Una clase se encuentra utilizando variables internas de otra clase
+
+### Tratamiento
+- Una de las soluciones es utilizar **Move Method** y **Move Field** para mover las partes de una clase a la clase en las que se utilizan esas partes. Pero solamente si la primera clase no necesita esas piezas.
+
+- Otra solución sería utilizar **Extract Class** y **Hide Delegate** para hacer que las relaciones del código sean "oficiales".
+
+- Si las clases son interdependientes entre si, utilizar **Change Bidirectional Association to Unidirectional**.
+
+- Si se da entre una subclase y una superclase, reemplazar la delegación con herencia.
+
+###
 
 
 ## Temporary Field
@@ -226,3 +365,16 @@ A menudo, las variables temporales se crean para su uso en el algoritmo cuando r
 
 - Introducir **Null Object** e integrarlo en lugar del código condicional que se utilizó para verificar la existencia de los valores de los campos temporales.
 
+## Primitive Obsession
+Los tipos primitivos a menudo se utilizan para "simular" tipos. Estos tienen un conjunto de números o strings que forman la lista de valores permitidos para alguna entidad.
+
+- Uso de variables de tipo primitivo en lugar de objetos.
+- Uso de constantes para codificar información (USER_ADMIN_ROLE = 1) para hacer referencia a usuarios con derechos de administrador.
+- Uso de constantes de String como nombres de variables.
+
+### Tratamiento
+- Su hay una gran variedad de campos primitivos, es posible agrupar lógicamente algunos de ellos en su propia clase. Se podría mover el comportamiento asociado con estos datos a la clase también. Se podría utilizar **Replace Data Value with Object**.
+
+- Si los valores de las variabels primitivas se utilizan como parámetros, se podría utilizar **Introduce Parameter Object** o **Preserve Whole Object**.
+
+- Cuando se codifican datos complicados en variables, utilizar **Replace Type Code with Class**, **Replace Type Code with Subclasses**, **Replace Type Code with State** o **Replace Type Code with Strategy**

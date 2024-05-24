@@ -1,0 +1,119 @@
+@startuml
+
+abstract class GeneradorNumeroStrategy {
+  + {abstract}obtenerNumeroLibre(GestorNumerosDisponibles gestorNumerosDisponibles): String
+}
+
+class GestorNumerosDisponibles {
+  - lineas: String[*]
+
+  + <<create>>GestorNumerosDisponibles()
+  + getLineas():String[*]
+  + obtenerNumeroLibre():String
+  + cambiarTipoGenerador(GeneradorNumeroStrategy valor)
+  + getTipoGenerador(): GeneradorNumeroStrategy
+  + existeNumero(String numero): Boolean
+  + agregarNumero(String numero)
+}
+
+class GeneradorNumeroPrimero extends GeneradorNumeroStrategy {
+  + <<create>>GeneradorNumeroPrimero()
+  + obtenerNumeroLibre(GestorNumerosDisponibles gestorNumerosDisponibles): String
+}
+
+class GeneradorNumeroRandom extends GeneradorNumeroStrategy {
+  + <<create>> GeneradorNumeroRandom()
+  + obtenerNumeroLibre(GestorNumerosDisponibles gestorNumerosDisponibles): String
+}
+
+class GeneradorNumeroUltimo extends GeneradorNumeroStrategy {
+  + <<create>>GeneradorNumeroUltimo()
+  + obtenerNumeroLibre(GestorNumerosDisponibles gestorNumerosDisponibles): String
+}
+
+GeneradorNumeroStrategy <|.. GeneradorNumeroPrimero
+GeneradorNumeroStrategy <|.. GeneradorNumeroRandom
+GeneradorNumeroStrategy <|.. GeneradorNumeroUltimo
+GestorNumerosDisponibles --> GeneradorNumeroStrategy: tipoGenerador
+
+abstract class Cliente {
+  - nombre: String
+  - numeroTelefono: String
+  
+  + <<create>> Cliente(String nombre, String numero)
+  + agregarLlamada(Llamada llamada)
+  + getNombre(): String
+  + setNombre(String nombre)
+  + getNumeroTelefono(): String
+  + setNumeroTelefono(String numeroTelefono)
+  + calcularMontoTotalLlamadas(): Real
+  + {abstract} getDescuento(): Real
+  + getLlamadas(): Llamada[*]
+}
+
+class UsuarioFisico extends Cliente {
+  - dni: String
+  
+  + <<create>> UsuarioFisico(String data, String nombre, String numero)
+  + getDNI(): String
+  + setDNI(String dni)
+  + getDescuento(): Real
+}
+
+class UsuarioJuridico extends Cliente {
+  - cuit: String
+  
+  + <<create>>UsuarioJuridico(String data, String nombre, String numero)
+  + getCuit(): String
+  + setCuit(String cuit)
+  + getDescuento(): Real
+}
+
+
+Cliente -right-> Llamada: llamadas *
+
+abstract class Llamada {
+  - origen: String
+  - destino: String
+  - duracion: Integer
+  
+  +<<create>>Llamada(String origen, String destino, int duracion)
+  + getOrigen(): String
+  + getRemitente(): String
+  + getDuracion(): Integer
+  + {abstract} precioTotalLlamada(): Real
+  + {abstract} valorLlamada(): Real
+}
+
+class LlamadaNacional extends Llamada {
+  + <<create>> LlamadaNacional(String origen, String destino, int duracion)
+  + precioTotalLlamada(): Real
+  + valorLlamada(): Real
+}
+
+class LlamadaInternacional extends Llamada {
+  + <<create>> LlamadaInternacional(String origen, String destino, int duracion)
+  + precioTotalLlamada(): Real
+  + valorLlamada(): Real
+}
+
+class Empresa {
+
+  + agregarNumeroTelefono(String str): Real
+  + obtenerNumeroLibre(): String
+  + registrarUsuarioFisico(String data, String nombre): Cliente
+  + registrarUsuarioJuridico(String data, String nombre): Cliente
+  + registrarLlamadaNacional(Cliente origen, Cliente destino, int duracion): Llamada
+  + registrarLlamadaInternacional(Cliente origen, Cliente destino, int duracion): Llamada
+  + agregarLlamada(Cliente cliente, Llamada llamada)
+  + calcularMontoTotalLlamadas(Cliente cliente): Real
+  + cantidadDeUsuarios(): Integer
+  + existeUsuario(Cliente persona): Real
+  + getGestorNumeros(): GestorNumerosDisponibles 
+}
+
+Empresa --> Cliente: clientes *
+Empresa --> Llamada: llamadas *
+Empresa --> GestorNumerosDisponibles: guia
+
+@enduml

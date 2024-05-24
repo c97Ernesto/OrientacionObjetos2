@@ -44,96 +44,12 @@
 
 <h2 align="center">Refactoring</h2>
 
-## Form Template Method
-Cuando hay dos métodos en subclases que realizan los mismos pasos, pero hacen cosas distintas en cada paso, crear métodos para esos pasos con la misma firma y mover el método original a la clase base.
-
-
-### Mecánica
-1. Encontrar el método que es similar en todas las subclases y extraer sus partes en: métodos idénticos (misma signatura y cuerpo en las subclases) o métodos únicos (distinta signatura y cuerpo).
-
-2. Aplicar **Pull Up Method** para los métodos idénticos.
-
-3. Aplicar **Rename Method** sobre los únicos hasta que el método similar quede con cuerpo idéntico en las subclases.
-
-4. Compilar y testear después de cada "rename".
-
-5. Aplicar **Rename Method** sobre los métodos similares en las subclases (esqueleto). 
-
-6. Aplicar **Pull Up Method** sobre los métodos similares.
-
-7. Definir métodos abstractos en la superclase por cada método único en las subclases.
-
-8. Compilar y testear.
-
-### Ejemplo
-
-```java
-public abstract class Party { }
-
-public class Person extends Party {
-  private String firstName;
-  private String lastName;
-  private Date dob;
-  private String nationality;
-  public void printNameAndDetails() {
-    System.out.println("Name: " + firstName + " " + lastName);
-    System.out.println("DOB: " + dob.toString() + ", Nationality: " + nationality);
-  }
-}
-
-public class Company extends Party {
-  private String name;
-  private String companyType;
-  private Date incorporated;
-  public void PrintNameAndDetails() {
-    System.out.println("Name: " + name + " " + companyType);
-    System.out.println("Incorporated: " + incorporated.toString());
-  }
-}
-```
-#### Después de aplicar refactoring
-```java
-public abstract class Party {
-  public void PrintNameAndDetails() {
-    printName();
-    printDetails();
-  }
-  public abstract void printName();
-  public abstract void printDetails();
-}
-
-public class Person extends Party {
-  private String firstName;
-  private String lastName;
-  private Date dob;
-  private String nationality;
-  public void printDetails() {
-  System.out.println("DOB: " + dob.toString() + ", Nationality: " + nationality);
-  }
-  public void printName() {
-    System.out.println("Name: " + firstName + " " + lastName);  
-  }
-}
-
-public class Company extends Party {
-  private String name;
-  private String companyType;
-  private Date incorporated;
-  public void printDetails() {
-    System.out.println("Incorporated: " + incorporated.toString());
-  }
-  public void printName() {
-    System.out.println("Name: " + name + " " + companyType);
-  }
-}
-```
-
 ## Replace Conditional Logic with Strategy
 ### Mecánica
 
 1. Crear una clase Strategy.
 
-2. Aplicar **Move Method** para mover el cálculo con los codicionales del contexto al strategy.
+2. Aplicar **Move Method** para mover el cálculo con los codicionales del context al strategy.
 
     - Definir una v.i en el contexto para referenciar al strategy y un setter (generalmente el constructor del contexto).
     - Dejar un método en el contructor que delegue.

@@ -1,0 +1,62 @@
+@startuml
+
+class Cliente {
+    - tipo: String
+    - nombre: String
+    - numeroTelefono: String
+    - cuit: String
+    - dni: String
+
+    + getTipo(): String
+    + getNombre(): String
+    + getNumeroTelefono(): String
+    + getCuit(): String
+    + getDni(): String
+    + setTipo(tipo: String)
+    + setNombre(nombre: String)
+    + setnumeroTelefono(numeroTelefono: String)
+    + setCuit(cuit: String)
+    + setDni(dni: String)
+}
+
+class GestorNumerosDisponibles {
+    - lineas: String[*]
+    - tipoGenerador: String
+
+    + obtenerNumeroLibre(): String
+    + cambiarTipoGenerador(valor: String)
+    + getLineas(): String[*]
+}
+
+class Llamada {
+    - tipoDellamada: String
+    - orign: String
+    - destino: String
+    - duracion: Integer
+
+    + <<create>> Llamada(tipoLlamada: String, origen: String,
+    destino: String, duracion: Integer)
+}
+
+class Empresa{
+    {static} descuentoJur: Real
+    {static} descuentoFis: Real
+
+    + agregarNumeroTelefonico(str String): Boolean
+    + obtenerNumeroLibre(): String
+    + registrarUsuario(data: String, nombre: String, tipo: String): Cliente
+    + registrarLlamada(origen: Cliente, destiono: Cliente, t: String, duracion: Integer): Llamada
+    + calcularMontoTotalLlamadas(cliente: Cliente): Real
+    + cantidadDeUsuarios(): Integer
+    + existeUsuario(Cliente persona): Boolean  
+    + getGestorNumeros: GestorNumerosDisponibles 
+}
+
+Empresa --> Cliente: clientes *
+Empresa -left-> Llamada: llamadas *
+Empresa --> GestorNumerosDisponibles: guia
+Cliente --> Llamada: llamadas *
+
+
+
+@enduml
