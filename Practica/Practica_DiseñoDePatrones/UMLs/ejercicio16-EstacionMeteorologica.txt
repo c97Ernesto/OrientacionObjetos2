@@ -1,0 +1,82 @@
+@startuml
+package "ejercicio16" {
+  interface "WeatherData" {
+    + {abstract} getTemperatura(): Real
+    + {abstract} getPresion(): Real
+    + {abstract} getRadiacionSolar(): Real
+    + {abstract} getTemperaturas(): Real[*]
+    + {abstract} displayData(): String
+  }
+
+  class "HomeWeatherStation" {
+    -temperatura: double
+    -presion: double
+    -radiacionSolar: double
+    -temperaturas: List<Double>
+    +getTemperatura(): double
+    +getPresion(): double
+    +getRadiacionSolar(): double
+    +getTemperaturas(): List<Double>
+    +displayData(): String
+  }
+
+  class "HomeWeatherStationAdapter" {
+    -homeWeatherStation: HomeWeatherStation
+    +getTemperatura(): double
+    +getPresion(): double
+    +getRadiacionSolar(): double
+    +getTemperaturas(): List<Double>
+    +displayData(): String
+  }
+
+  abstract class "Decorador" {
+    - componente: WeatherData
+    + getTemperatura(): double
+    + getPresion(): double
+    + getRadiacionSolar(): double
+    + getTemperaturas(): List<Double>
+    + displayData(): String
+    # promedio(): Real
+    # tempMax(): Real
+    # tempMin(): Real
+  }
+
+  class DisplayPromedioF {
+    + <<create>> DisplayPromedioF(WeatherData)
+    + displayData(): String
+  }
+  class DisplayPromedioC {
+    + <<create>> DisplayPromedioC(WeatherData)
+    + displayData(): String
+  }
+
+  class DisplayTemperaturaMinF {
+    + <<create>> DisplayTemperaturaMinF(WeatherData)
+    + displayData(): String
+  }
+  class DisplayTemperaturaMinC {
+    + <<create>> DisplayTemperaturaMinC(WeatherData)
+    + displayData(): String
+  }
+  class DisplayTemperaturaMaxF {
+    + <<create>> DisplayTemperaturaMaxF(WeatherData)
+    + displayData(): String
+  }
+  class DisplayTemperaturaMaxC {
+    + <<create>> DisplayTemperaturaMaxC(WeatherData)
+    + displayData(): String
+  }
+
+  WeatherData <|.. HomeWeatherStation
+  WeatherData <|.. HomeWeatherStationAdapter
+  WeatherData <|.. Decorador
+  HomeWeatherStationAdapter -right-> HomeWeatherStation: - homeWeatherStation
+  Decorador *--> WeatherData: - componente
+  Decorador <|-- DisplayPromedioF
+  Decorador <|-- DisplayPromedioC
+  Decorador <|-- DisplayTemperaturaMinF
+  Decorador <|-- DisplayTemperaturaMaxF
+  Decorador <|-- DisplayTemperaturaMinC
+  Decorador <|-- DisplayTemperaturaMaxC
+}
+@enduml

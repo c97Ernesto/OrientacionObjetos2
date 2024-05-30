@@ -303,12 +303,12 @@ Es un patrón que se basa en el principio de composición sobre la herencia, lo 
 
 ### Motivación
 Cuando se quiere alterar la funcionalidad de un objeto, lo primero que uno piensa es en extender una clase. Sin embargo, **la herencia tiene varias limitaciones** importantes.
-- La herencia **es estática**. No se puede alterar la funcionalidad de un objeto existente el tiempo de ejecución. Solo se puede sustituir el objeto completo por otro creado a partir de una subclase diferente.
+- La herencia **es estática**. No se puede alterar la funcionalidad de un objeto existente en tiempo de ejecución. Solo se puede sustituir el objeto completo por otro creado a partir de una subclase diferente.
 - Las **subclases solo pueden tener una clase padre**. En la mayoría de los lenguajes, la herencia no permite a una clase heredar comportamientos de varias clases al mismo tiempo.
 
 Una de las formas de superar estas limitaciones es empleando la _**Agregación**_ o la _**Composición**_ en lugar de la _Herencia_. Ambas alternativas funcionan prácticamente del mismo modo: un objeto tiene una referencia a otro y le delega parte del trabajo, mientras  que con la herencia, el propio objeto puede realizar ese trabajo, heredando el comportamiento de su superclase.
   - En la **Agregación** el objeto X contiene objetos Y. Y puede existir sin X.
-  - En la **Compoición** el objeto X está compuesto de objetos Y. X Administra el ciclo de vida de Y, además de que Y no puede existir sin X.
+  - En la **Composición** el objeto X está compuesto de objetos Y. X Administra el ciclo de vida de Y, además de que Y no puede existir sin X.
 
 Con esta nueva solución se puede sustituir fácilmente el objeto "ayudante" vinculado por otro, cambiando el comportamiento del contenedor durante el tiempo de ejecución. Un objeto puede utilizar el comportamiento de varias clases con referencias a varios objetos, delegándole todo tipo de tareas. La agregación/composición es el principio clave que se esconde tras muchos patrones de diseño.
 
@@ -324,7 +324,7 @@ Con esta nueva solución se puede sustituir fácilmente el objeto "ayudante" vin
 
 - **ConcreteComponent:** es la implementación principal y cuya clase recibirá los decoradores para agregar funcionalidad extra dinámicamente.
 
-- **Decorador:** tiene una referencia a un objeto _component_, los decoradores son los responsables de agregar nuevos comportamientos al objeto _component_ envuelto. Cada decorador tiene una relación con el componente de tipo has-a(tiene un).
+- **Decorador:** tiene una referencia a un objeto _component_. El decorador redirige las peticiones al componente y, además, puede realizar operaciones adicionales después de cada redirección. De este modo, se pueden añadir decoradores con cualidades añadidas recursivamente.
 
 - **ConcreteDecorator:** son las clases concretas que extiendes de la clase `Decorator`. Agregan comportamiento específico o responsabilidades al componente. Cada clase concreta le puede agregar más comportamientos específicos al componente.
 
