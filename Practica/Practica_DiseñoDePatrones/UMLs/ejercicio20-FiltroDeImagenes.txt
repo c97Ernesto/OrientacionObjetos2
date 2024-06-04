@@ -1,0 +1,82 @@
+@startuml
+
+abstract class Filter <Decorator>{
+  + {abstract} filter(image: BufferedImage): BufferedImage
+
+}
+
+class Artifact <ConcreteDecorator>{
+  + {static} tempFile: File
+  + {static} compressionQuality: Real
+
+  + filter(image: BufferedImage): BufferedImage
+}
+
+class Dull <ConcreteDecorator>{
+
+  + filter(image: BufferedImage): BufferedImage
+}
+
+class RGBShiftRepeater <ConcreteDecorator>{
+  + {static} X_REPEAT: Integer
+  + {static} Y_REPEAT: Integer
+
+  + filter(image: BufferedImage): BufferedImage
+}
+
+class Rainbow <ConcreteDecorator>{
+  + filter(image: BufferedImage): BufferedImage
+}
+
+class Repeater <ConcreteDecorator>{
+  + {static} X_REPEAT: Integer
+  + {static} Y_REPEAT: Integer
+
+  + filter(image: BufferedImage): BufferedImage
+}
+
+class PNGFilterLauncher <ConcreteComponent>{
+  - inputFile: File
+  - outputFile: File
+
+  + {static} main()
+  + {static} processArg()
+  + {static} initializeFilters()
+}
+
+Filter <|-right- Artifact
+Filter <|-up- Dull
+Filter <|-up- RGBShiftRepeater
+Filter <|-- Rainbow
+Filter <|-- Repeater
+
+PNGFilterLauncher -right-> Filter: - filters *
+PNGFilterLauncher -right-> Filter: - activeFilters *
+
+
+
+note as n1
+**a.** El objetivo del patrón es el de actualizar filtros en tiempo de 
+ejecución. Esto se puede observar en la clase **PNGFilterLauncher**
+donde se activan los filtros que son requeridos en el método
+**processArgs()**
+end note
+
+note as n2
+**b.** La estructura del proyecto no coincide con la estructura y los
+participantes del libro de Gof, no se encontraría el participante
+**Component** como interfaz común de los decoradores y 
+el componente concreto
+end note
+
+note as n3
+**c.** Al no encontrarse el participante **Component** y no tener la
+referencia al mismo, no se van a poderr añadir las cualidades 
+recursivamente, todo este trabajo lo hará el participante 
+**ConcreteComponent** iterativamente.
+end note
+
+n1 .. n2
+n2 .. n3
+
+@enduml
