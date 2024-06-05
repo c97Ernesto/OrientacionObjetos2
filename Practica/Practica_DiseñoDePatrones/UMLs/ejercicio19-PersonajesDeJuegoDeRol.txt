@@ -1,0 +1,72 @@
+@startuml
+
+abstract class PersonajeProduct <Product>{
+  - nombre: String
+  - salud: Integer
+
+  + <<create>> PersonajeProduct(nombre: String)
+  + atacar(PersonajeProduct otroPersonaje)
+  + gettersAndSetters()
+}
+
+class ArqueroProduct {
+  + <<create>>(nombre: String)
+}
+
+class GuerreroProduct {
+  + <<create>>(nombre: String)
+}
+
+class MagoProduct {
+  + <<create>>(nombre: String)
+}
+
+abstract class PersonajeCreator <Creator>{
+  + {abstract}factoryMethod(nombrePersonaje: String): PersonajeProduct
+}
+
+class ArqueroCreator{
+  
+}
+
+class GuerreroCreator{
+  
+}
+
+class MagoCreator{
+  
+}
+
+interface Habilidad {
+}
+interface Armadura {
+
+}
+interface Arma {
+  + {abstract} golpearArmadura(Armadura armadura)
+}
+
+
+PersonajeCreator <.right. PersonajeProduct
+
+PersonajeProduct <|-- ArqueroProduct
+PersonajeProduct <|-- GuerreroProduct
+PersonajeProduct <|-- MagoProduct
+
+PersonajeCreator <|-- ArqueroCreator
+PersonajeCreator <|-- GuerreroCreator
+PersonajeCreator <|-- MagoCreator
+
+PersonajeProduct -up-> Arma: - arma
+PersonajeProduct -up-> Armadura: - armadura
+PersonajeProduct -up-> Habilidad: - habilidades *
+
+Arma -up-> ArmaArco
+Arma -up-> ArmaBaston
+Arma -up-> ArmaEspada
+
+Armadura -up-> ArmaduraAcero
+Armadura -up-> ArmaduraCuero
+Armadura -up-> ArmaduraHierro
+
+@enduml
