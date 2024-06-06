@@ -160,18 +160,36 @@ Cuando se invoca a un método, los propios objetos pasan la solicitud a lo largo
 
 ![composite-img2](imgs/CompositeStructure-Img2.png)
 
-- El **Cliente** funciona con todos los elementos a través de la interfaz componente. Como resultado el cliente puede funcionar de la misma manera tanto con elementos simples o complejos del árbol.
+- `Client`
+  - funciona con todos los elementos a través de la interfaz componente.
+  - como resultado el cliente puede funcionar de la misma manera tanto con elementos simples o complejos del árbol.
 
-- La interfaz **Componente** describe operaciones que son comunes a elementos simples y complejos del árbol.
-  - (opcional) define una interfaz para acceder al "padre" de un componente en la estructura recursiva y la implementa si es apropiado.
+- `Component`
+  - define la interfaz común para los objetos de la composición.
+  - define la interfaz para acceder y gestinar los hijos.
+  - implementa un comportamiento por defecto común a las subclases
+  - (opcional) define la interfaz para acceder al padre de un componente en la estructura recursiva, y la implementa si es apropiado.
 
-- La **Hoja** es un elemento básico de un árbol que no tiene subelementos.
-  - Normalmente, los componentes de la hoja acaban realizando la mayoría del trabajo real, ya que no tienen a nadie a quien delegarle el trabajo
+- `Leaf`
+  - representa los objetos hojas (sin hijos) de la composición.
+  - define comportamiento para los objetos primitivos.
 
-- El **Contenedor** (también llamado compuesto) es un elemento que tiene subelementos: hojas u otros contenedores. Un contenedor no conoce las clases concretas de sus hijos. Funciona con todos los subelementos únicamente a través de la interfaz componente.
-  - Al recibir una solicitud, un contenedor delega el trabajo a sus subelementos, procesa los resultados intermedios y devuelve el resultado final al cliente.
+- `Composite`
+  - define compotamiento para los componentes que tienen hijos.
+  - almacena componentes hijos.
+  - implementa las operaciones de _Component_ para la gestión de los hijos.
 
+### Implementación
+1. Asegurarse de que el modelo central de la aplicación pueda representarse como una estructura de árbol. Diviendo la estructura en elementos simples (`Leaf`) y más complejos (`Composite`). Los contenedores (`Composite`) deben ser capaces de contener elementos simples como contenedores.
 
+2. Se declara la interfaz `Component` con una lista de métodos que tengan sentido para los componentes simples y complejos.
+
+3. Se crea una clase hoja (`Leaf`) para representar los elementos simples (pueden haber distintos tipos de clases hojas).
+
+4. Se crea una clase contenedora `Composite` para representar los elementos complejos. Se crea una variable del tipo `Component` para almacenar referencias a subelementos los cuales deberían ser hojas y contenedores.
+    > Al implementar los métodos de la interfaz componente, el contenedor debe delegar la mayor parte del trabajo a los subelementos.
+
+5. Por último se definen los métodos para añadir y eliminar hijos dentro del contenedor (opcional).
 
 ## Strategy
 
@@ -260,25 +278,26 @@ Los `ContextState` implementan varios comportamientos asociados a un estado cont
 
 ![State-Img2](imgs/State-Img2.svg)
 
-1. **Context** representa el componente que puede cambiar de estado,  el cual tiene entre sus atributos el estado actual. 
+1. **`Context`** representa el componente que puede cambiar de estado,  el cual tiene entre sus atributos el estado actual. 
 
-2. **AbstractState** es la clase base para la generación de los distintos estados. Se recomienda que sea una clase abstracta en lugar de una interface debido a que podemos definir comportamientos por default  y así afectar el comportamiento de todos los estados. </br>
-Estos métodos deben tener sentido para todos los estados concretos para no tener estados que tengan métodos que nunca se usen.
+2. **`AbstractState`** es la clase base para la generación de los distintos estados. 
+    - Se recomienda que sea una clase abstracta en lugar de una interface debido a que podemos definir comportamientos por default  y así afectar el comportamiento de todos los estados.
+    - Estos métodos deben tener sentido para todos los estados concretos para no tener estados que tengan métodos que nunca se usen.
 
-3. **ConcreteState** representan a los componentes los cuales tienen un posible estado por el cual la aplicación puede pasar, por lo que tendremos un `ConcreteState` por cada estado posible, esta clase debe heredar de `AbstractState`.
+3. **`ConcreteState`** representan a los componentes los cuales tienen un posible estado por el cual la aplicación puede pasar, por lo que tendremos un `ConcreteState` por cada estado posible, esta clase debe heredar de `AbstractState`.
     - Los objetos de estado pueden almacenar una referencia inversa al objeto de contexto. A través de esta referencia, el estado puede extraer cualquier información requerida del objeto contexto, así como inciari transiciones de estado.
     - Para evitar la duplicación de código similar a través de varios estados, _se pueden incluir clases abstractas intermedias_ que encapsulen algún comportamiento común
 
 4. Tanto _Context_ como _ConcreteState_ pueden establecer el nuevo estado del contexto.
     - La responsabilidad de decidir cuando cambiar de estado está definida por los mismos estados.
 
-### Como implementarlo
+### Implementación
 1. Decidir qué clase actuará como contexto. Puede ser una clase existente que ya tiene el código dependiente del estado, o una nueva clase, si el código específico del estado está distribuido a lo largo de varias clases.
 
-2. Declarar la interfaz de estado. Aunque se puedan replicar todos los métodos declarados en el contexto, hay que centrarse en los que pueden contener comportamientos específicos del estado.
+2. Declarar la interfaz `State`. Aunque se puedan replicar todos los métodos declarados en el contexto, hay que centrarse en los que pueden contener comportamientos específicos del estado.
 
-3. Para cada estado actual, crear una clase derivada de la interfaz de estado. Luego de verificar los métodos del contexto, extraer todo el código relacionado con ese estado para meterlo en la clase recién creada. </br>
-Al mover el código a la clase estado, puede que haya problemas con los miembros privados del contexto. Aglunas soluciones alternativas:
+3. Para cada estado actual, crear una clase derivada de la interfaz `State`. Luego de verificar los métodos del contexto, extraer todo el código relacionado con ese estado para meterlo en la clase recién creada. </br>
+Al mover el código a la clase `State`, puede que haya problemas con los miembros privados del contexto. Aglunas soluciones alternativas:
     - Hacer publicos los campos o métodos (getters and setters).
     - Anidar las clases de estado en la clase contexto, sólo si el lenguaje de programación soporta clases anidadas.
 
@@ -380,3 +399,48 @@ El plan B consiste en convertir el proxy en una subclase de `realSubject`.
 3. Implementar los métodos de `Proxy` según sus propósitos. En la mayoría de los casos, después de hacer cierta labor, el _proxy_ debería delegar el trabajo a un objeto de _realSubject_.
 4. Considerar introducir un método de cración que decida si el cliente obtiene un _proxy_ o una _realSubject_. Puede tratarse simplemente de un método estático en la clase `Proxy`.
 5. Considerar implementar la inicialización diferida para el objeto de servicio.
+
+
+
+
+## Factory Method
+- Define una "inteerface" para la creación de objetos, mientras permite que subclases decidan qué clase se va a instanciar.
+- Alias: **Virtual Constructor**.
+
+### Motivación
+
+
+Los frameworks utilizan clases abstractas para definir y mantener relaciones entre objetos. Un framework a menudo es responsable de crear estos objetos también. Considera un framework para aplicaciones que pueden presentar múltiples documentos al usuario. Dos abstracciones clave en este framework son las clases Application y Document. Ambas clases son abstractas, y los clientes deben derivarlas para realizar sus implementaciones específicas de la aplicación. Para crear una aplicación de dibujo, por ejemplo, definimos las clases DrawingApplication y DrawingDocument. La clase Application es responsable de gestionar los Documentos y los creará según sea necesario; por ejemplo, cuando el usuario selecciona Abrir o Nuevo desde un menú.
+
+Dado que la subclase particular de Document que se debe instanciar es específica de la aplicación, la clase Application no puede predecir la subclase de Document que debe instanciar; la clase Application solo sabe cuándo se debe crear un nuevo documento, no qué tipo de Document crear. Esto crea un dilema: el framework debe instanciar clases, pero solo conoce clases abstractas, las cuales no puede instanciar.
+
+El patrón Factory Method ofrece una solución. Encapsula el conocimiento de qué subclase de Document crear y mueve este conocimiento fuera del framework.
+
+
+Las subclases de Application redefinen una operación abstracta CreateDocument en Application para devolver la subclase apropiada de Document. Una vez que se instancia una subclase de Application, puede entonces instanciar Documentos específicos de la aplicación sin conocer su clase. Llamamos a CreateDocument un método fábrica porque es responsable de "fabricar" un objeto.
+
+### Estructura
+
+![FactoryMethod-Structure](imgs/FactoryMethod-Structure.png)
+
+1. **Product** declara la interfaz (interface o abstract class), que es común a todos los objetos que pueden ser producidos por el creador y sus subclases.
+
+2. **ConcreteProducts** son las diferentes implementaciones de la interfaz _Product_
+
+3. **Creator** declara el _método de fábrica_ que devuelve nuevos objetos de la clase _Product_. El tipo de devolución de éste método tiene que concidir con la interfaz de la clase _Product_. Además se puede declarar el _método de fábrica_ como abstracto para obligar a todas las subclases a implementar sus propias versiones del método.
+> A pesar del nombre, la creación del producto no es responsabilidad principal del creador. Por lo general, la clase creadora ya tiene alguna alguna lógica empresarial central relacionada con los productos
+
+4. **ConcreteCreators** sobreescriben el método de fábrica para que devuelva un tipo diferente de prooducto.
+
+
+### Implementacíon
+1. Creamos la interfaz `Product` y sus subclases `ConcreteProduct` en caso de ser necesario.
+
+2. Creamos la clase `Creator` con el factory method que retorne la interfaz común (`Product`) de los productos
+
+
+3. Buscamos todas las referencias a contructores de la clase `Product` si los hay y los sustituimos por las invocaciones al método creador de la clase `Creator`.
+
+4. Creamos las subclases de la clase `Creator` para cada tipo de producto. Sobreescribimos el factory method en cada subclase.
+
+
