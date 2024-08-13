@@ -1,0 +1,28 @@
+@startuml
+
+class Context {
+  + <<create>> Context(initialState: State)
+  + request()
+}
+
+abstract State {
+  + requestHandle()
+}
+
+class ConcreteStateA extends State {
+  + requestHandle()
+}
+
+class ConcreteStateB extends State{
+  + requestHandle()
+}
+
+Context o-right-> State: state
+
+note bottom of Context
+  request(){
+    state.requestHandle()
+  }
+end note
+
+@enduml

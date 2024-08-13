@@ -85,7 +85,7 @@ Es el único patrón que tiene los dos ámbitos, clases y objetosm ya que podemo
 
 ## Template Method
 
-Es un _patrón de diseño de comportamiento_ del ámbito de clases. Con este patrón se define **el esqueleto** de un algoritmo en una clase abstracta y se deja que sean las subclases quienes proporcionen **detalles concretos**  de algunos o todos los pasos de ese algoritmo. Lo interesante de este algoritmo es que también da la opción a las subclases de redefinir los pasos de acuerdo con sus necesidades, sin cambiar la estructura del algoritmo.
+Es un _patrón de diseño de comportamiento_ del ámbito de clases. Se basa en definir **el esqueleto** de un algoritmo en una clase abstracta y deja que sean las subclases quienes proporcionen la **implementación concreta**  de algunos o todos los pasos de ese algoritmo. Además las subclases pueden redefinir los pasos de acuerdo con sus necesidades, sin cambiar la estructura del algoritmo.
 
 
 ### Motivación 
@@ -115,11 +115,11 @@ Tenemos dos tipos de pasos:
 1. _Métodos Abstractos_, deben ser implementados por todas las subclases.
 2. _Métodos Opcionales_, ya tienen cierta implementación por defecto, pero aún así pueden sobreescribirse si es necesairo.
 
-Hay otro tipo de paso llamado **hooks**. Es un paso opcional con cuerpo vacío. El "template method" seguirá funcionando aunque el gancho no se sobreescriba. Normalmente los hooks se colocan antes y después de pasos cruciales de los algoritmos, suministrando a las subclases puntos adicionales de extensión para un algoritmo.
+Hay otro tipo de paso llamado **hooks**. Es un paso opcional con cuerpo vacío. El "template method" seguirá funcionando aunque el hook no se sobreescriba. Normalmente los hooks se colocan antes y después de pasos cruciales de los algoritmos, suministrando a las subclases puntos adicionales de extensión para un algoritmo.
 
 
 ### Estructura
-![TemplateMethod-Img3](imgs/TemplateMethod-Img3.png)
+![TemplateMethod-Img3](imgs/TemplateMethod-Structure.svg)
 
 #### Roles
 - **Clase Abstracta**
@@ -227,15 +227,16 @@ Como resultado, se pueden agregar nuevos métodos de pago o modificar los existe
 
 ![Strategy-Img1](imgs/Strategy-Img2.png)
 
-1. La clase **Context** mantiene una referencia a una de las estrategias concretas y se comunica con este objeto únicamnte a través de la interfaz _Strategy_.
+#### Roles
+- **`Context`** mantiene una referencia a una de las estrategias concretas y se comunica con este objeto únicamnte a través de la interfaz _Strategy_.
 
-2. La interfaz **Strategy** es común a todas las estrategias concretas. Declara un método que la clase _Context_ utiliza para ejecutar una estrategia.
+- **`Strategy`** es común a todas las estrategias concretas. Declara un método que la clase _Context_ utiliza para ejecutar una estrategia.
 
-3. Las **ConcreteStrategy** implementan distintas variaciones de un algoritmo que la clase contexto utiliza.
+- **`ConcreteStrategy`** implementan distintas variaciones de un algoritmo que la clase contexto utiliza.
 
-4. La clase _Context_ invoca el método de ejecución en el objeto estrategia viculado cada vez que necesita ejecutar el algoritmo. La clase _Context_ no sabe con que tipo de estrategia se va a encontrar o como se ejecutará el algoritmo.
+- La clase _Context_ invoca el método de ejecución en el objeto estrategia viculado cada vez que necesita ejecutar el algoritmo. La clase _Context_ no sabe con que tipo de estrategia se va a encontrar o como se ejecutará el algoritmo.
 
-5. El _Cliente_ crea un objeto estrategia específico y lo pasa a la clase _Context_. La clase _Context_ expone un modificador _set()_ que permite a los clientes sustituir la estrategia asociada al contexto durante el tiempo de ejecución.
+- El _Cliente_ crea un objeto estrategia específico y lo pasa a la clase _Context_. La clase _Context_ expone un modificador _set()_ que permite a los clientes sustituir la estrategia asociada al contexto durante el tiempo de ejecución.
 
 ### Aplicabilidad
 
@@ -276,7 +277,7 @@ Los `ContextState` implementan varios comportamientos asociados a un estado cont
 
 ### Estructura 
 
-![State-Img2](imgs/State-Img2.svg)
+![State-Structure](imgs/State-Structure.svg)
 
 1. **`Context`** representa el componente que puede cambiar de estado,  el cual tiene entre sus atributos el estado actual. 
 

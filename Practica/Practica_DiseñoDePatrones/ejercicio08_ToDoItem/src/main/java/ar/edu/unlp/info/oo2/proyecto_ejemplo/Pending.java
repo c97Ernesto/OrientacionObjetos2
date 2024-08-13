@@ -5,8 +5,8 @@ import java.time.Duration;
 public class Pending extends ToDoItemState{
 	private static final String NOMBRE_ESTADO = "Pending";
 
-	public Pending(ToDoItem state) {
-		super(state, getNombreEstado());
+	public Pending(ToDoItem tarea) {
+		super(tarea, getNombreEstado());
 		// TODO Auto-generated constructor stub
 	}
 	

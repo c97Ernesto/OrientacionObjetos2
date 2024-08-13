@@ -11,9 +11,11 @@ public class Mixta extends Topografia{
 		partes = new ArrayList<Topografia>(partes);
 	}
 	
+	@Override
 	public double proporcionDeAgua() {
-		return totalDeAgua() / partes.size();
+		return this.totalDeAgua() / partes.size();
 	}
+	
 	
 	private double totalDeAgua() {
 		return partes.stream().mapToDouble(parte -> parte.proporcionDeAgua()).sum();

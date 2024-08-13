@@ -1,7 +1,8 @@
 package ar.edu.unlp.info.oo2.proyecto_ejemplo;
 
-public abstract class Topografia {
 
+
+public abstract class Topografia {
 	
 	public abstract double proporcionDeAgua();
 
